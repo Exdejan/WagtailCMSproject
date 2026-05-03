@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags %}
+
+{% block body_class %}home-page{% endblock %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home_page.css' %}?v=2">
+{% endblock %}
+
+{% block content %}
+    <div class="favorites-shell" id="home">
+        <header class="topbar">
+            <p class="logo-text">Edriane's Favorites ✨</p>
+            <nav class="topnav" aria-label="Main sections">
+                <a href="#home">Home</a>
+                <a href="#hobbies">Hobbies</a>
+                <a href="#games">Games</a>
+                <a href="#food">Food</a>
+                <a href="#music">Music</a>
+                <a href="#artists">Artists</a>
+                <a href="#shows">Shows</a>
+            </nav>
+            <a class="contact-btn" href="#about">About Edriane</a>
+        </header>
+
+        <main>
+            <section class="hero-band">
+                <div class="hero-copy">
+                    <p class="micro-title">A personal world of favorites</p>
+                    <h1>Edriane S Garcia</h1>
+                    <h2>Favorite things, favorite life.</h2>
+                    <p>
+                        A chill explorer of stories, games, and good food. This page is a simple collection
+                        of the hobbies and favorites that shape Edriane's day-to-day life.
+                    </p>
+                    <a class="primary-cta" href="#hobbies">Explore Favorites</a>
+                </div>
+
+                <div class="hero-polaroids" aria-label="Featured categories">
+                    <article class="polaroid">
+                        <div class="image-slot">Replace with Hobbies Image</div>
+                        <p>Hobbies</p>
+                    </article>
+                    <article class="polaroid tilt-right">
+                        <div class="image-slot">Replace with Games Image</div>
+                        <p>Games</p>
+                    </article>
+                    <article class="polaroid tilt-left">
+                        <div class="image-slot">Replace with Food Image</div>
+                        <p>Food</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="quick-links" aria-label="Favorite categories">
+                <article><h3>Hobbies</h3><p>Reading, anime, gaming, sightseeing, gardening.</p></article>
+                <article><h3>Games</h3><p>Classic strategy, horror, and visual novels.</p></article>
+                <article><h3>Food</h3><p>Comfort pasta, caviar, and wings.</p></article>
+                <article><h3>Music</h3><p>High-energy tracks and confident rap vibes.</p></article>
+                <article><h3>Artists</h3><p>A mix of bold rap and motivational sound.</p></article>
+                <article><h3>Shows</h3><p>Dark mysteries, horror, and suspense stories.</p></article>
+            </section>
+
+            <section class="section-block" id="hobbies">
+                <div class="section-head">
+                    <h2>Hobbies</h2>
+                    <p>The things Edriane enjoys most.</p>
+                </div>
+                <div class="card-grid">
+                    <article class="media-card"><div class="image-slot">Reading Books Image</div><h3>Reading Books</h3></article>
+                    <article class="media-card"><div class="image-slot">Watching Anime Image</div><h3>Watching Anime</h3></article>
+                    <article class="media-card"><div class="image-slot">Playing Video Games Image</div><h3>Playing Video Games</h3></article>
+                    <article class="media-card"><div class="image-slot">Binge-Eating Image</div><h3>Binge-Eating</h3></article>
+                    <article class="media-card"><div class="image-slot">Sightseeing Image</div><h3>Sightseeing</h3></article>
+                    <article class="media-card"><div class="image-slot">Gardening Image</div><h3>Gardening</h3></article>
+                </div>
+            </section>
+
+            <section class="section-block" id="games">
+                <div class="section-head">
+                    <h2>Favorite Games</h2>
+                </div>
+                <div class="favorite-grid">
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Warcraft 3</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Battle Realms</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Chaos Zero Nightmare</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Resident Evil 2 Remake</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Visual Novels</div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section-block" id="food">
+                <div class="section-head">
+                    <h2>Favorite Food</h2>
+                </div>
+                <div class="favorite-grid favorite-grid--food">
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Spaghetti</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Lasagna</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Caviar</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Wings</div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section-block" id="music">
+                <div class="section-head">
+                    <h2>Favorite Music</h2>
+                </div>
+                <div class="favorite-grid favorite-grid--music">
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Beam Me Up Scotty</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Roman's Revenge</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Itty Bitty Piggy</div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section-block" id="artists">
+                <div class="section-head">
+                    <h2>Favorite Artists</h2>
+                </div>
+                <div class="favorite-grid favorite-grid--artists">
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Nicki Minaj</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">JT</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">NEFFEX</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Macklemore</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">bbno$</div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section-block" id="shows">
+                <div class="section-head">
+                    <h2>Favorite Shows</h2>
+                </div>
+                <div class="favorite-grid favorite-grid--shows">
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Corpse Party</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Higurashi</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Umineko</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Another</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Danganronpa</div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="about-card" id="about">
+                <div class="avatar-slot">Replace with Profile Photo</div>
+                <div>
+                    <h2>Meet Edriane</h2>
+                    <p>
+                        Edriane S Garcia is a fan of immersive worlds, thoughtful stories, and comfort food.
+                        Whether it is discovering a new anime, replaying a classic game, or enjoying a great meal,
+                        he values experiences that feel memorable and fun.
+                    </p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer-note">
+            <p>Built as a personal favorites homepage for Edriane S Garcia.</p>
+        </footer>
+    </div>
+{% endblock %}
