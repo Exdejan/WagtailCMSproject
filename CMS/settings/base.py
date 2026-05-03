@@ -11,6 +11,10 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key")
 DEBUG = os.environ.get("DEBUG", "True") == "True"
 ALLOWED_HOSTS = ["*"]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://ourfavorites.up.railway.app",
+]
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -146,7 +150,7 @@ WAGTAILSEARCH_BACKENDS = {
     }
 }
 
-WAGTAILADMIN_BASE_URL = "http://example.com"
+WAGTAILADMIN_BASE_URL = "https://ourfavorites.up.railway.app"
 
 WAGTAILDOCS_EXTENSIONS = [
     'csv', 'docx', 'key', 'odt', 'pdf', 'pptx', 'rtf', 'txt', 'xlsx', 'zip'
