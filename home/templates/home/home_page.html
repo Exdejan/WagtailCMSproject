@@ -21,14 +21,26 @@
                 <a href="#artists">Artists</a>
                 <a href="#shows">Shows</a>
             </nav>
-            <a class="contact-btn" href="#about">About Edriane</a>
+            <div class="profile-switcher">
+                <button type="button" id="profile-switcher-button" class="contact-btn" aria-haspopup="true" aria-expanded="false">
+                    Switch profile ▾
+                </button>
+                <ul id="profile-switcher-menu" class="profile-switcher-menu" aria-label="Select profile">
+                    {% for profile in profile_pages %}
+                        <li><a href="{{ profile.url }}">Switch to {{ profile.title }}</a></li>
+                    {% endfor %}
+                    {% if profile_pages|length == 0 %}
+                        <li class="disabled">No profiles available</li>
+                    {% endif %}
+                </ul>
+            </div>
         </header>
 
         <main>
             <section class="hero-band">
                 <div class="hero-copy">
                     <p class="micro-title">A personal world of favorites</p>
-                    <h1>Edriane S Garcia</h1>
+                    <h1>Edriane S. Garcia</h1>
                     <h2>Favorite things, favorite life.</h2>
                     <p>
                         A chill explorer of stories, games, and good food. This page is a simple collection
@@ -222,4 +234,24 @@
             <p>Built as a personal favorites homepage for Edriane S Garcia.</p>
         </footer>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var button = document.getElementById('profile-switcher-button');
+            var menu = document.getElementById('profile-switcher-menu');
+            if (button && menu) {
+                button.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                    var isOpen = menu.classList.toggle('open');
+                    button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                });
+                document.addEventListener('click', function() {
+                    menu.classList.remove('open');
+                    button.setAttribute('aria-expanded', 'false');
+                });
+                menu.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                });
+            }
+        });
+    </script>
 {% endblock %}

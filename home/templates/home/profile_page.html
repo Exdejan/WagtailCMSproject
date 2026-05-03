@@ -1,0 +1,496 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags %}
+
+{% block body_class %}home-page{% endblock %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home_page.css' %}?v=2">
+{% endblock %}
+
+{% block content %}
+    <div class="favorites-shell" id="home">
+        <header class="topbar">
+            <p class="logo-text">Edriane's Favorites ✨</p>
+            <nav class="topnav" aria-label="Main sections">
+                <a href="#home">Home</a>
+                <a href="#hobbies">Hobbies</a>
+                <a href="#games">Games</a>
+                <a href="#food">Food</a>
+                <a href="#music">Music</a>
+                <a href="#artists">Artists</a>
+                <a href="#shows">Shows</a>
+            </nav>
+            <div class="profile-switcher">
+                <button type="button" id="profile-switcher-button" class="contact-btn" aria-haspopup="true" aria-expanded="false">
+                    Switch profile ▾
+                </button>
+                <ul id="profile-switcher-menu" class="profile-switcher-menu" aria-label="Select profile">
+                    {% for profile in profile_pages %}
+                        {% if profile.id != page.id %}
+                            <li><a href="{{ profile.url }}">Switch to {{ profile.title }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if profile_pages|length <= 1 %}
+                        <li class="disabled">No other profiles available</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </header>
+
+        <main>
+            <section class="hero-band">
+                <div class="hero-copy">
+                    <p class="micro-title">{% if page.hero_micro_title %}{{ page.hero_micro_title }}{% else %}A personal world of favorites{% endif %}</p>
+                    <h1>{{ page.title }}</h1>
+                    <h2>{% if page.hero_subtitle %}{{ page.hero_subtitle }}{% else %}Favorite things, favorite life.{% endif %}</h2>
+                    {% if page.intro_text %}
+                        {{ page.intro_text|richtext }}
+                    {% else %}
+                        <p>
+                            A chill explorer of stories, games, and good food. This page is a simple collection
+                            of the hobbies and favorites that shape {{ page.title }}'s day-to-day life.
+                        </p>
+                    {% endif %}
+                    <a class="primary-cta" href="{% if page.hero_cta_anchor %}{{ page.hero_cta_anchor }}{% else %}#hobbies{% endif %}">{% if page.hero_cta_text %}{{ page.hero_cta_text }}{% else %}Explore Favorites{% endif %}</a>
+                </div>
+
+                {% if page.hero_image %}
+                    <div class="hero-image">
+                        <img src="{{ page.hero_image.url }}" alt="{{ page.title }} hero image">
+                    </div>
+                {% elif page.hero_polaroids %}
+                    <div class="hero-polaroids" aria-label="Featured categories">
+                        {% for block in page.hero_polaroids %}
+                            <article class="polaroid{% if forloop.counter == 2 %} tilt-right{% elif forloop.counter == 3 %} tilt-left{% endif %}">
+                                <div class="image-slot">
+                                    {% if block.value.image %}
+                                        <img src="{{ block.value.image.url }}" alt="{{ block.value.title }}">
+                                    {% else %}
+                                        {{ block.value.title }} Image
+                                    {% endif %}
+                                </div>
+                                <p>{{ block.value.title }}</p>
+                            </article>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="hero-polaroids" aria-label="Featured categories">
+                        <article class="polaroid">
+                            <div class="image-slot">Replace with Hobbies Image</div>
+                            <p>Hobbies</p>
+                        </article>
+                        <article class="polaroid tilt-right">
+                            <div class="image-slot">Replace with Games Image</div>
+                            <p>Games</p>
+                        </article>
+                        <article class="polaroid tilt-left">
+                            <div class="image-slot">Replace with Food Image</div>
+                            <p>Food</p>
+                        </article>
+                    </div>
+                {% endif %}
+            </section>
+
+            {% if page.quick_links %}
+                <section class="quick-links" aria-label="Favorite categories">
+                    {% for block in page.quick_links %}
+                        <article>
+                            <h3>{{ block.value.title }}</h3>
+                            <p>{{ block.value.description }}</p>
+                        </article>
+                    {% endfor %}
+                </section>
+            {% endif %}
+
+            <section class="section-block" id="hobbies">
+                <div class="section-head">
+                    <h2>{% if page.hobbies_title %}{{ page.hobbies_title }}{% else %}Hobbies{% endif %}</h2>
+                    {% if page.hobbies_description %}
+                        <p>{{ page.hobbies_description|richtext }}</p>
+                    {% endif %}
+                </div>
+                {% if page.hobbies_cards %}
+                    <div class="card-grid">
+                        {% for card in page.hobbies_cards %}
+                            <article class="media-card">
+                                <div class="image-slot">
+                                    {% if card.value.image %}
+                                        <img src="{{ card.value.image.url }}" alt="{{ card.value.title }}">
+                                    {% else %}
+                                        Drop Image Here
+                                    {% endif %}
+                                </div>
+                                <h3>{{ card.value.title }}</h3>
+                                {% if card.value.subtitle %}
+                                    <p>{{ card.value.subtitle }}</p>
+                                {% endif %}
+                            </article>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="card-grid">
+                        <article class="media-card"><div class="image-slot">Reading Books Image</div><h3>Reading Books</h3></article>
+                        <article class="media-card"><div class="image-slot">Watching Anime Image</div><h3>Watching Anime</h3></article>
+                        <article class="media-card"><div class="image-slot">Playing Video Games Image</div><h3>Playing Video Games</h3></article>
+                        <article class="media-card"><div class="image-slot">Binge-Eating Image</div><h3>Binge-Eating</h3></article>
+                        <article class="media-card"><div class="image-slot">Sightseeing Image</div><h3>Sightseeing</h3></article>
+                        <article class="media-card"><div class="image-slot">Gardening Image</div><h3>Gardening</h3></article>
+                    </div>
+                {% endif %}
+            </section>
+
+            {% if page.profile_sections %}
+                {% for section in page.profile_sections %}
+                    <section class="section-block" id="{{ section.value.section_id }}">
+                        <div class="section-head">
+                            <h2>{{ section.value.section_title }}</h2>
+                            {% if section.value.section_description %}
+                                <p>{{ section.value.section_description }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="favorite-grid favorite-grid--{{ section.value.section_id }}">
+                            {% for item in section.value.items %}
+                                <article class="favorite-image-card">
+                                    <div class="favorite-image-slot">
+                                        {% if item.value.image %}
+                                            <img src="{{ item.value.image.url }}" alt="{{ item.value.title }}">
+                                        {% else %}
+                                            Drop Image Here
+                                        {% endif %}
+                                    </div>
+                                    <div class="favorite-image-label">{{ item.value.title }}</div>
+                                    {% if item.value.subtitle %}
+                                        <p>{{ item.value.subtitle }}</p>
+                                    {% endif %}
+                                </article>
+                            {% endfor %}
+                        </div>
+                    </section>
+                {% endfor %}
+            {% else %}
+                <section class="section-block" id="hobbies">
+                    <div class="section-head">
+                        <h2>Hobbies</h2>
+                        <p>The things Edriane enjoys most.</p>
+                    </div>
+                    <div class="card-grid">
+                        <article class="media-card"><div class="image-slot">Reading Books Image</div><h3>Reading Books</h3></article>
+                        <article class="media-card"><div class="image-slot">Watching Anime Image</div><h3>Watching Anime</h3></article>
+                        <article class="media-card"><div class="image-slot">Playing Video Games Image</div><h3>Playing Video Games</h3></article>
+                        <article class="media-card"><div class="image-slot">Binge-Eating Image</div><h3>Binge-Eating</h3></article>
+                        <article class="media-card"><div class="image-slot">Sightseeing Image</div><h3>Sightseeing</h3></article>
+                        <article class="media-card"><div class="image-slot">Gardening Image</div><h3>Gardening</h3></article>
+                    </div>
+                </section>
+
+                <section class="section-block" id="games">
+                    <div class="section-head">
+                        <h2>Favorite Games</h2>
+                    </div>
+                    <div class="favorite-grid">
+                        <article class="favorite-image-card">
+                            <div class="favorite-image-slot">Drop Image Here</div>
+                            <div class="favorite-image-label">Warcraft 3</div>
+                        </article>
+                        <article class="favorite-image-card">
+                            <div class="favorite-image-slot">Drop Image Here</div>
+                            <div class="favorite-image-label">Battle Realms</div>
+                        </article>
+                        <article class="favorite-image-card">
+                            <div class="favorite-image-slot">Drop Image Here</div>
+                            <div class="favorite-image-label">Chaos Zero Nightmare</div>
+                        </article>
+                        <article class="favorite-image-card">
+                            <div class="favorite-image-slot">Drop Image Here</div>
+                            <div class="favorite-image-label">Resident Evil 2 Remake</div>
+                        </article>
+                        <article class="favorite-image-card">
+                            <div class="favorite-image-slot">Drop Image Here</div>
+                            <div class="favorite-image-label">Visual Novels</div>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="section-block" id="food">
+                    <div class="section-head">
+                        <h2>Favorite Food</h2>
+                    </div>
+                    <div class="favorite-grid favorite-grid--food">
+                        <article class="favorite-image-card">
+                            <div class="favorite-image-slot">Drop Image Here</div>
+                            <div class="favorite-image-label">Spaghetti</div>
+                        </article>
+                        <article class="favorite-image-card">
+                            <div class="favorite-image-slot">Drop Image Here</div>
+                            <div class="favorite-image-label">Lasagna</div>
+                        </article>
+                        <article class="favorite-image-card">
+                            <div class="favorite-image-slot">Drop Image Here</div>
+                            <div class="favorite-image-label">Caviar</div>
+                        </article>
+                        <article class="favorite-image-card">
+                            <div class="favorite-image-slot">Drop Image Here</div>
+                            <div class="favorite-image-label">Wings</div>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="section-block" id="music">
+                    <div class="section-head">
+                        <h2>Favorite Music</h2>
+                    </div>
+                    <div class="favorite-grid favorite-grid--music">
+                        <article class="favorite-image-card">
+                            <div class="favorite-image-slot">Drop Image Here</div>
+                            <div class="favorite-image-label">Beam Me Up Scotty</div>
+                        </article>
+                        <article class="favorite-image-card">
+                            <div class="favorite-image-slot">Drop Image Here</div>
+                            <div class="favorite-image-label">Roman's Revenge</div>
+                        </article>
+                        <article class="favorite-image-card">
+                            <div class="favorite-image-slot">Drop Image Here</div>
+                            <div class="favorite-image-label">Itty Bitty Piggy</div>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="section-block" id="artists">
+                    <div class="section-head">
+                        <h2>Favorite Artists</h2>
+                    </div>
+                    <div class="favorite-grid favorite-grid--artists">
+                        <article class="favorite-image-card">
+                            <div class="favorite-image-slot">Drop Image Here</div>
+                            <div class="favorite-image-label">Nicki Minaj</div>
+                        </article>
+                        <article class="favorite-image-card">
+                            <div class="favorite-image-slot">Drop Image Here</div>
+                            <div class="favorite-image-label">JT</div>
+                        </article>
+                        <article class="favorite-image-card">
+                            <div class="favorite-image-slot">Drop Image Here</div>
+                            <div class="favorite-image-label">NEFFEX</div>
+                        </article>
+                        <article class="favorite-image-card">
+                            <div class="favorite-image-slot">Drop Image Here</div>
+                            <div class="favorite-image-label">Macklemore</div>
+                        </article>
+                        <article class="favorite-image-card">
+                            <div class="favorite-image-slot">Drop Image Here</div>
+                            <div class="favorite-image-label">bbno$</div>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="section-block" id="shows">
+                    <div class="section-head">
+                        <h2>Favorite Shows</h2>
+                    </div>
+                    <div class="favorite-grid favorite-grid--shows">
+                        <article class="favorite-image-card">
+                            <div class="favorite-image-slot">Drop Image Here</div>
+                            <div class="favorite-image-label">Corpse Party</div>
+                        </article>
+                        <article class="favorite-image-card">
+                            <div class="favorite-image-slot">Drop Image Here</div>
+                            <div class="favorite-image-label">Higurashi</div>
+                        </article>
+                        <article class="favorite-image-card">
+                            <div class="favorite-image-slot">Drop Image Here</div>
+                            <div class="favorite-image-label">Umineko</div>
+                        </article>
+                        <article class="favorite-image-card">
+                            <div class="favorite-image-slot">Drop Image Here</div>
+                            <div class="favorite-image-label">Another</div>
+                        </article>
+                        <article class="favorite-image-card">
+                            <div class="favorite-image-slot">Drop Image Here</div>
+                            <div class="favorite-image-label">Danganronpa</div>
+                        </article>
+                    </div>
+                </section>
+            {% endif %}
+
+            <section class="about-card" id="about">
+                <div class="section-head">
+                    <h2>Hobbies</h2>
+                    <p>The things Edriane enjoys most.</p>
+                </div>
+                <div class="card-grid">
+                    <article class="media-card"><div class="image-slot">Reading Books Image</div><h3>Reading Books</h3></article>
+                    <article class="media-card"><div class="image-slot">Watching Anime Image</div><h3>Watching Anime</h3></article>
+                    <article class="media-card"><div class="image-slot">Playing Video Games Image</div><h3>Playing Video Games</h3></article>
+                    <article class="media-card"><div class="image-slot">Binge-Eating Image</div><h3>Binge-Eating</h3></article>
+                    <article class="media-card"><div class="image-slot">Sightseeing Image</div><h3>Sightseeing</h3></article>
+                    <article class="media-card"><div class="image-slot">Gardening Image</div><h3>Gardening</h3></article>
+                </div>
+            </section>
+
+            <section class="section-block" id="games">
+                <div class="section-head">
+                    <h2>Favorite Games</h2>
+                </div>
+                <div class="favorite-grid">
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Warcraft 3</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Battle Realms</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Chaos Zero Nightmare</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Resident Evil 2 Remake</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Visual Novels</div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section-block" id="food">
+                <div class="section-head">
+                    <h2>Favorite Food</h2>
+                </div>
+                <div class="favorite-grid favorite-grid--food">
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Spaghetti</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Lasagna</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Caviar</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Wings</div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section-block" id="music">
+                <div class="section-head">
+                    <h2>Favorite Music</h2>
+                </div>
+                <div class="favorite-grid favorite-grid--music">
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Beam Me Up Scotty</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Roman's Revenge</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Itty Bitty Piggy</div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section-block" id="artists">
+                <div class="section-head">
+                    <h2>Favorite Artists</h2>
+                </div>
+                <div class="favorite-grid favorite-grid--artists">
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Nicki Minaj</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">JT</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">NEFFEX</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Macklemore</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">bbno$</div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section-block" id="shows">
+                <div class="section-head">
+                    <h2>Favorite Shows</h2>
+                </div>
+                <div class="favorite-grid favorite-grid--shows">
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Corpse Party</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Higurashi</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Umineko</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Another</div>
+                    </article>
+                    <article class="favorite-image-card">
+                        <div class="favorite-image-slot">Drop Image Here</div>
+                        <div class="favorite-image-label">Danganronpa</div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="about-card" id="about">
+                {% if page.profile_image %}
+                    <img class="profile-image" src="{{ page.profile_image.url }}" alt="{{ page.title }} profile photo">
+                {% else %}
+                    <div class="avatar-slot">Replace with Profile Photo</div>
+                {% endif %}
+                <div>
+                    <h2>{% if page.about_heading %}{{ page.about_heading }}{% else %}Favorite quote{% endif %}</h2>
+                    {{ page.bio|richtext }}
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer-note">
+            <p>Built as a personal favorites homepage for Edriane S Garcia.</p>
+        </footer>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var button = document.getElementById('profile-switcher-button');
+            var menu = document.getElementById('profile-switcher-menu');
+            if (button && menu) {
+                button.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                    var isOpen = menu.classList.toggle('open');
+                    button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                });
+                document.addEventListener('click', function() {
+                    menu.classList.remove('open');
+                    button.setAttribute('aria-expanded', 'false');
+                });
+                menu.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                });
+            }
+        });
+    </script>
+{% endblock %}
