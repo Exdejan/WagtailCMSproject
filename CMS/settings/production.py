@@ -6,7 +6,7 @@ DEBUG = False
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 # ✅ Comment out the old manifest storage override
-# STORAGES["staticfiles"]["BACKEND"] = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
+# STORAGES.setdefault("staticfiles", {})["BACKEND"] = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
 
 try:
     from .local import *
