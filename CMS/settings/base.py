@@ -39,16 +39,15 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "cloudinary",
+    "cloudinary_storage",
     "django.contrib.staticfiles",
 ]
 
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-
-    # ✅ ADD THIS (for static files in production)
     "whitenoise.middleware.WhiteNoiseMiddleware",
-
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -82,7 +81,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "CMS.wsgi.application"
 
 
-# ✅ DATABASE (Railway-compatible)
+# DATABASE (Railway-compatible)
 DATABASES = {
     "default": dj_database_url.config(
         default="sqlite:///db.sqlite3",
@@ -117,22 +116,27 @@ STATICFILES_DIRS = [
     PROJECT_DIR / "static",
 ]
 
-# ⚠️ CHANGE THIS (important for deployment)
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATIC_URL = "/static/"
 
-# Media (uploads)
+# Media (uploads) — kept as fallback for local dev
 MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
 
 
+# Cloudinary config
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+}
+
 # Storage
 STORAGES = {
     "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
-        # ✅ Use WhiteNoise storage
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
