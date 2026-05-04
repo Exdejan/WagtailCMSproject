@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "wagtail.snippets",
     "wagtail.documents",
     "wagtail.images",
+    "cloudinary",  # ← ADDED
     "wagtail.search",
     "wagtail.admin",
     "wagtail",
@@ -45,10 +46,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-
-    # ✅ ADD THIS (for static files in production)
     "whitenoise.middleware.WhiteNoiseMiddleware",
-
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -117,7 +115,6 @@ STATICFILES_DIRS = [
     PROJECT_DIR / "static",
 ]
 
-# ⚠️ CHANGE THIS (important for deployment)
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATIC_URL = "/static/"
 
@@ -132,7 +129,6 @@ STORAGES = {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        # ✅ Use WhiteNoise storage
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
@@ -155,3 +151,19 @@ WAGTAILADMIN_BASE_URL = "https://ourfavorites.up.railway.app"
 WAGTAILDOCS_EXTENSIONS = [
     'csv', 'docx', 'key', 'odt', 'pdf', 'pptx', 'rtf', 'txt', 'xlsx', 'zip'
 ]
+
+
+# ========================================
+# CLOUDINARY CONFIGURATION
+# ========================================
+import cloudinary
+
+CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL')
+
+if CLOUDINARY_URL:
+    cloudinary.config(cloudinary_url=CLOUDINARY_URL)
+    
+    # Use Cloudinary for media files only
+    STORAGES["default"] = {
+        "BACKEND": "cloudinary.storage.MediaCloudinaryStorage",
+    }
