@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static wagtailcore_tags %}
+{% load static wagtailcore_tags wagtailimages_tags %}
 
 {% block body_class %}home-page{% endblock %}
 
@@ -61,7 +61,7 @@
 
                 {% if page.hero_image %}
                     <div class="hero-image">
-                        <img src="{{ page.hero_image.url }}" alt="{{ page.title }} hero image">
+                        {% image page.hero_image max-800x600 %}
                     </div>
                 {% elif page.hero_polaroids %}
                     <div class="hero-polaroids" aria-label="Featured categories">
@@ -69,7 +69,7 @@
                             <article class="polaroid{% if forloop.counter == 2 %} tilt-right{% elif forloop.counter == 3 %} tilt-left{% endif %}">
                                 <div class="image-slot">
                                     {% if block.value.image %}
-                                        <img src="{{ block.value.image.url }}" alt="{{ block.value.title }}">
+                                        {% image block.value.image fill-300x300 %}
                                     {% endif %}
                                 </div>
                                 <p>{{ block.value.title }}</p>
@@ -106,7 +106,7 @@
                                 <article class="media-card">
                                     <div class="image-slot">
                                         {% if card.value.image %}
-                                            <img src="{{ card.value.image.url }}" alt="{{ card.value.title }}">
+                                            {% image card.value.image fill-360x240 %}
                                         {% endif %}
                                     </div>
                                     <h3>{{ card.value.title }}</h3>
@@ -134,7 +134,7 @@
                                 <article class="favorite-image-card">
                                     <div class="favorite-image-slot">
                                         {% if item.value.image %}
-                                            <img src="{{ item.value.image.url }}" alt="{{ item.value.title }}">
+                                            {% image item.value.image fill-360x240 %}
                                         {% endif %}
                                     </div>
                                     <div class="favorite-image-label">{{ item.value.title }}</div>
@@ -151,7 +151,7 @@
             {% if page.profile_image or page.about_heading or page.bio %}
                 <section class="about-card" id="about">
                     {% if page.profile_image %}
-                        <img class="profile-image" src="{{ page.profile_image.url }}" alt="{{ page.title }} profile photo">
+                        {% image page.profile_image fill-130x130 class="profile-image" %}
                     {% endif %}
                     <div>
                         {% if page.about_heading %}
