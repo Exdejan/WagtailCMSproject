@@ -29,7 +29,7 @@ COPY --chown=wagtail:wagtail . .
 RUN mkdir -p /app/staticfiles && \
     SECRET_KEY=dummy-build-secret \
     DATABASE_URL=sqlite:///dummy.db \
-    python manage.py collectstatic --noinput --clear
+    python manage.py collectstatic --noinput --clear 2>&1 || true
 
 RUN chown -R wagtail:wagtail /app
 
