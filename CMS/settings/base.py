@@ -2,6 +2,11 @@ import os
 from pathlib import Path
 import dj_database_url
 
+# ✅ CLOUDINARY IMPORTS (moved to top)
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = PROJECT_DIR.parent
 
@@ -122,7 +127,6 @@ STATICFILES_DIRS = [
     PROJECT_DIR / "static",
 ]
 
-# ⚠️ CHANGE THIS (important for deployment)
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATIC_URL = "/static/"
 
@@ -131,11 +135,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
 
 
-# ✅ CLOUDINARY CONFIGURATION
-import cloudinary
-import cloudinary.uploader
-import cloudinary.api
-
+# ✅ CLOUDINARY CONFIGURATION (imports already at top)
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
     'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
@@ -143,7 +143,6 @@ CLOUDINARY_STORAGE = {
 }
 
 
-# Storage
 # Storage
 STORAGES = {
     "default": {
