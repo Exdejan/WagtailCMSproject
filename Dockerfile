@@ -8,9 +8,6 @@ RUN useradd wagtail
 EXPOSE 8080
 
 # Set environment variables.
-# 1. Force Python stdout and stderr streams to be unbuffered.
-# 2. Set PORT variable that is used by Gunicorn. This should match "EXPOSE"
-#    command.
 ENV PYTHONUNBUFFERED=1 \
     PORT=8080 \
     DJANGO_SETTINGS_MODULE=CMS.settings.production
@@ -35,23 +32,20 @@ RUN pip install -r /requirements.txt
 # Use /app folder as a directory where the source code is stored.
 WORKDIR /app
 
-# Set this directory to be owned by the "wagtail" user. This Wagtail project
-# uses SQLite, the folder needs to be owned by the user that
-# will be writing to the database file.
+# Set this directory to be owned by the "wagtail" user.
 RUN chown wagtail:wagtail /app
 
 # Copy the source code of the project into the container.
-RUN mkdir -p /app/CMS/staticfiles && chown -R wagtail:wagtail /app
+COPY --chown=wagtail:wagtail . .
+
+# Create staticfiles directory so wagtail user can write to it.
+RUN mkdir -p /app/CMS/staticfiles
 
 # Use user "wagtail" to run the build commands below and the server itself.
 USER wagtail
-
-# NOTE: collectstatic is intentionally NOT run here at build time because
-# Cloudinary env vars are not available during build. It runs at container
-# startup instead (see CMD below).
 
 # Runtime command:
 #   1. Collect static files (env vars are available here)
 #   2. Migrate the database.
 #   3. Start the application server.
-CMD find /app -name "manage.py"; find /app -name "wsgi.py"
+CMD set -xe; python manage.py collectstatic --noinput; python manage.py migrate --noinput; gunicorn CMS.wsgi:application --bind 0.0.0.0:8080
