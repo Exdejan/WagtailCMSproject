@@ -91,7 +91,7 @@ if DATABASE_URL:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": parsed.path[1:],  # removes leading slash
+            "NAME": parsed.path[1:],
             "USER": parsed.username,
             "PASSWORD": parsed.password,
             "HOST": parsed.hostname,
@@ -100,6 +100,22 @@ if DATABASE_URL:
         }
     }
     print(f">>> DB HOST={parsed.hostname} NAME={parsed.path[1:]} USER={parsed.username}", file=sys.stderr)
+
+    # Test raw psycopg2 connection
+    try:
+        import psycopg2
+        conn = psycopg2.connect(
+            dbname=parsed.path[1:],
+            user=parsed.username,
+            password=parsed.password,
+            host=parsed.hostname,
+            port=parsed.port,
+        )
+        conn.close()
+        print(">>> PSYCOPG2 CONNECTION: SUCCESS", file=sys.stderr)
+    except Exception as e:
+        print(f">>> PSYCOPG2 CONNECTION FAILED: {type(e).__name__}: {e}", file=sys.stderr)
+
 else:
     print(">>> ⚠️ DATABASE_URL is MISSING — falling back to SQLite!", file=sys.stderr)
     DATABASES = {
