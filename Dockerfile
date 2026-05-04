@@ -54,4 +54,4 @@ USER wagtail
 #   1. Collect static files (env vars are available here)
 #   2. Migrate the database.
 #   3. Start the application server.
-CMD set -xe; python manage.py collectstatic --noinput 2>&1; python manage.py migrate --noinput; gunicorn CMS.wsgi:application --bind 0.0.0.0:8080
+CMD set -xe; python -c "import django; django.setup(); from django.conf import settings; print('STATIC_ROOT:', settings.STATIC_ROOT); print('STATICFILES_DIRS:', settings.STATICFILES_DIRS); print('FINDERS:', settings.STATICFILES_FINDERS)"; python manage.py collectstatic --noinput; python manage.py migrate --noinput; gunicorn CMS.wsgi:application --bind 0.0.0.0:8080
