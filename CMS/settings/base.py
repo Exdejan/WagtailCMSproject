@@ -1,7 +1,7 @@
 import os
-from pathlib import Path
-import dj_database_url
 import sys
+import urllib.parse
+from pathlib import Path
 
 # ✅ CLOUDINARY IMPORTS (moved to top)
 import cloudinary
@@ -84,14 +84,22 @@ WSGI_APPLICATION = "CMS.wsgi.application"
 print(">>> DJANGO_SETTINGS_MODULE =", os.environ.get("DJANGO_SETTINGS_MODULE"), file=sys.stderr)
 print(">>> DATABASE_URL =", os.environ.get("DATABASE_URL"), file=sys.stderr)
 
-db_url = os.environ.get("DATABASE_URL")
-if db_url:
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+if DATABASE_URL:
+    parsed = urllib.parse.urlparse(DATABASE_URL)
     DATABASES = {
-        "default": dj_database_url.config(
-            default=db_url,
-            conn_max_age=600
-        )
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": parsed.path[1:],  # removes leading slash
+            "USER": parsed.username,
+            "PASSWORD": parsed.password,
+            "HOST": parsed.hostname,
+            "PORT": parsed.port,
+            "CONN_MAX_AGE": 600,
+        }
     }
+    print(f">>> DB HOST={parsed.hostname} NAME={parsed.path[1:]} USER={parsed.username}", file=sys.stderr)
 else:
     print(">>> ⚠️ DATABASE_URL is MISSING — falling back to SQLite!", file=sys.stderr)
     DATABASES = {
