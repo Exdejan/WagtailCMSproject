@@ -35,19 +35,17 @@ RUN pip install -r /requirements.txt
 # Use /app folder as a directory where the source code is stored.
 WORKDIR /app
 
-# Set this directory to be owned by the "wagtail" user. This Wagtail project
-# uses SQLite, the folder needs to be owned by the user that
-# will be writing to the database file.
-RUN mkdir -p /app/staticfiles && chown -R wagtail:wagtail /app
-
 # Copy the source code of the project into the container.
 COPY --chown=wagtail:wagtail . .
 
-# Use user "wagtail" to run the build commands below and the server itself.
-USER wagtail
+# Collect static files as root so it has access to everything.
+RUN mkdir -p /app/staticfiles && python manage.py collectstatic --noinput --clear
 
-# Collect static files.
-RUN python manage.py collectstatic --noinput --clear
+# Now hand ownership over to wagtail user.
+RUN chown -R wagtail:wagtail /app
+
+# Use user "wagtail" to run the server itself.
+USER wagtail
 
 # Runtime command that executes when "docker run" is called, it does the
 # following:
