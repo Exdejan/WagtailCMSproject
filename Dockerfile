@@ -5,14 +5,14 @@ FROM python:3.12-slim-bookworm
 RUN useradd wagtail
 
 # Port used by this container to serve HTTP.
-EXPOSE 8000
+EXPOSE 8080
 
 # Set environment variables.
 # 1. Force Python stdout and stderr streams to be unbuffered.
 # 2. Set PORT variable that is used by Gunicorn. This should match "EXPOSE"
 #    command.
 ENV PYTHONUNBUFFERED=1 \
-    PORT=8000 \
+    PORT=8080 \
     DJANGO_SETTINGS_MODULE=CMS.settings.production
 
 # Install system packages required by Wagtail and Django.
@@ -46,16 +46,12 @@ COPY --chown=wagtail:wagtail . .
 # Use user "wagtail" to run the build commands below and the server itself.
 USER wagtail
 
-# Collect static files.
-RUN python manage.py collectstatic --noinput --clear
+# NOTE: collectstatic is intentionally NOT run here at build time because
+# Cloudinary env vars are not available during build. It runs at container
+# startup instead (see CMD below).
 
-# Runtime command that executes when "docker run" is called, it does the
-# following:
-#   1. Migrate the database.
-#   2. Start the application server.
-# WARNING:
-#   Migrating database at the same time as starting the server IS NOT THE BEST
-#   PRACTICE. The database should be migrated manually or using the release
-#   phase facilities of your hosting platform. This is used only so the
-#   Wagtail instance can be started with a simple "docker run" command.
-CMD set -xe; python manage.py migrate --noinput; gunicorn CMS.wsgi:application
+# Runtime command:
+#   1. Collect static files (env vars are available here)
+#   2. Migrate the database.
+#   3. Start the application server.
+CMD set -xe; python manage.py collectstatic --noinput --clear; python manage.py migrate --noinput; gunicorn CMS.wsgi:application --bind 0.0.0.0:8080
