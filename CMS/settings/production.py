@@ -2,7 +2,7 @@ from .base import *
 
 DEBUG = False
 
-STORAGES["staticfiles"]["BACKEND"] = "whitenoise.storage.CompressedStaticFilesStorage"
+STORAGES["staticfiles"]["BACKEND"] = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
 try:
     from .local import *
