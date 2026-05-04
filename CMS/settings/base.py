@@ -20,6 +20,11 @@ CSRF_TRUSTED_ORIGINS = [
 INSTALLED_APPS = [
     "home",
     "search",
+    
+    # ✅ ADD CLOUDINARY (before wagtail apps)
+    "cloudinary_storage",
+    "cloudinary",
+    
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
     "wagtail.embeds",
@@ -126,10 +131,23 @@ MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
 
 
+# ✅ CLOUDINARY CONFIGURATION
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET')
+}
+
+
 # Storage
 STORAGES = {
     "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        # ✅ CHANGED: Use Cloudinary for media files
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
         # ✅ Use WhiteNoise storage

@@ -3,9 +3,11 @@ asgiref==3.11.1
 beautifulsoup4==4.11.2
 certifi==2026.4.22
 charset-normalizer==3.4.7
+cloudinary==1.44.2
 defusedxml==0.7.1
 dj-database-url==3.1.2
 Django==4.2.21
+django-cloudinary-storage==0.3.0
 django-filter==23.5
 django-modelcluster==6.5
 django-permissionedforms==0.1
