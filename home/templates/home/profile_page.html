@@ -12,16 +12,18 @@
     <div class="favorites-shell" id="home">
         <header class="topbar">
             <p class="logo-text">{{ page.title }}</p>
-            {% if page.profile_sections or page.bio %}
-                <nav class="topnav" aria-label="Main sections">
-                    {% for section in page.profile_sections %}
-                        <a href="#{{ section.value.section_id }}">{{ section.value.section_title }}</a>
-                    {% endfor %}
-                    {% if page.bio %}
-                        <a href="#about">About</a>
-                    {% endif %}
-                </nav>
-            {% endif %}
+            <nav class="topnav" aria-label="Main sections">
+                <a href="#home">Home</a>
+                {% if page.hobbies_title or page.hobbies_cards %}
+                    <a href="#hobbies">{{ page.hobbies_title|default:"Hobbies" }}</a>
+                {% endif %}
+                {% for section in page.profile_sections %}
+                    <a href="#{{ section.value.section_id }}">{{ section.value.section_title }}</a>
+                {% endfor %}
+                {% if page.bio or page.about_heading %}
+                    <a href="#about">About</a>
+                {% endif %}
+            </nav>
             <div class="profile-switcher">
                 <button type="button" id="profile-switcher-button" class="contact-btn" aria-haspopup="true" aria-expanded="false">
                     Switch profile ▾
