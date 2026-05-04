@@ -2,11 +2,11 @@ from .base import *
 
 DEBUG = False
 
-# ManifestStaticFilesStorage is recommended in production, to prevent
-# outdated JavaScript / CSS assets being served from cache
-# (e.g. after a Wagtail upgrade).
-# See https://docs.djangoproject.com/en/6.0/ref/contrib/staticfiles/#manifeststaticfilesstorage
-STORAGES["staticfiles"]["BACKEND"] = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
+# ✅ Use WhiteNoise for static files (Cloudinary handles media)
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+
+# ✅ Comment out the old manifest storage override
+# STORAGES["staticfiles"]["BACKEND"] = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
 
 try:
     from .local import *
