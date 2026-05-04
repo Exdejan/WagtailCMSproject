@@ -170,3 +170,5 @@ WAGTAILADMIN_BASE_URL = "https://ourfavorites.up.railway.app"
 WAGTAILDOCS_EXTENSIONS = [
     'csv', 'docx', 'key', 'odt', 'pdf', 'pptx', 'rtf', 'txt', 'xlsx', 'zip'
 ]
+
+print(">>> FINAL DATABASES ENGINE =", DATABASES['default'].get('ENGINE', 'MISSING'), file=sys.stderr)
