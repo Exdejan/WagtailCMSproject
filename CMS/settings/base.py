@@ -116,7 +116,7 @@ STATICFILES_DIRS = [
     PROJECT_DIR / "static",
 ]
 
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = PROJECT_DIR / "staticfiles"  # ← PROJECT_DIR not BASE_DIR
 STATIC_URL = "/static/"
 
 # Media (uploads) — kept as fallback for local dev
