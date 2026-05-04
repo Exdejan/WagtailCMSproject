@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import dj_database_url
+import sys
 
 # ✅ CLOUDINARY IMPORTS (moved to top)
 import cloudinary
@@ -9,7 +10,6 @@ import cloudinary.api
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = PROJECT_DIR.parent
-
 
 # SECURITY (important for deployment later)
 SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key")
@@ -20,16 +20,12 @@ CSRF_TRUSTED_ORIGINS = [
     "https://ourfavorites.up.railway.app",
 ]
 
-
 # Application definition
 INSTALLED_APPS = [
     "home",
     "search",
-    
-    # ✅ ADD CLOUDINARY (before wagtail apps)
     "cloudinary_storage",
     "cloudinary",
-    
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
     "wagtail.embeds",
@@ -52,13 +48,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 ]
 
-
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-
-    # ✅ ADD THIS (for static files in production)
     "whitenoise.middleware.WhiteNoiseMiddleware",
-
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -68,9 +60,7 @@ MIDDLEWARE = [
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 ]
 
-
 ROOT_URLCONF = "CMS.urls"
-
 
 TEMPLATES = [
     {
@@ -88,18 +78,28 @@ TEMPLATES = [
     },
 ]
 
-
 WSGI_APPLICATION = "CMS.wsgi.application"
 
+# ✅ DATABASE DEBUG + CONFIG
+print(">>> DJANGO_SETTINGS_MODULE =", os.environ.get("DJANGO_SETTINGS_MODULE"), file=sys.stderr)
+print(">>> DATABASE_URL =", os.environ.get("DATABASE_URL"), file=sys.stderr)
 
-# ✅ DATABASE (Railway-compatible)
-DATABASES = {
-    "default": dj_database_url.config(
-        default="sqlite:///db.sqlite3",
-        conn_max_age=600
-    )
-}
-
+db_url = os.environ.get("DATABASE_URL")
+if db_url:
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=db_url,
+            conn_max_age=600
+        )
+    }
+else:
+    print(">>> ⚠️ DATABASE_URL is MISSING — falling back to SQLite!", file=sys.stderr)
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -109,13 +109,11 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-
 # Internationalization
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
-
 
 # Static files
 STATICFILES_FINDERS = [
@@ -130,32 +128,25 @@ STATICFILES_DIRS = [
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATIC_URL = "/static/"
 
-# Media (uploads)
 MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
 
-
-# ✅ CLOUDINARY CONFIGURATION (imports already at top)
+# ✅ CLOUDINARY CONFIGURATION
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
     'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
     'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET')
 }
 
-
-# Storage
 STORAGES = {
     "default": {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
 }
 
-# WhiteNoise static files (using legacy setting)
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
-
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10_000
-
 
 # Wagtail
 WAGTAIL_SITE_NAME = "CMS"
