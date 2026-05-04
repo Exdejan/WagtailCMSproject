@@ -113,10 +113,11 @@ STATICFILES_FINDERS = [
 ]
 
 STATICFILES_DIRS = [
-    PROJECT_DIR / "static",
+    PROJECT_DIR / "static",      # /app/CMS/static  (CMS.css, CMS.js live here)
+    BASE_DIR / "home" / "static", # /app/home/static  (home_page.css lives here)
 ]
 
-STATIC_ROOT = PROJECT_DIR / "staticfiles"  # ← PROJECT_DIR not BASE_DIR
+STATIC_ROOT = PROJECT_DIR / "staticfiles"
 STATIC_URL = "/static/"
 
 # Media (uploads) — kept as fallback for local dev
@@ -131,8 +132,6 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
 }
 
-# Storage — plain Django for static (avoids WhiteNoise/Wagtail font conflicts)
-# WhiteNoise in MIDDLEWARE still serves & compresses files at runtime
 STORAGES = {
     "default": {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
