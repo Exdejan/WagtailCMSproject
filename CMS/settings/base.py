@@ -84,17 +84,22 @@ WSGI_APPLICATION = "CMS.wsgi.application"
 print(">>> DJANGO_SETTINGS_MODULE =", os.environ.get("DJANGO_SETTINGS_MODULE"), file=sys.stderr)
 print(">>> DATABASE_URL =", os.environ.get("DATABASE_URL"), file=sys.stderr)
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
-
-DATABASES = {
-    "default": dj_database_url.parse(
-        DATABASE_URL,
-        conn_max_age=600
-    ) if DATABASE_URL else {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+db_url = os.environ.get("DATABASE_URL")
+if db_url:
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=db_url,
+            conn_max_age=600
+        )
     }
-}
+else:
+    print(">>> ⚠️ DATABASE_URL is MISSING — falling back to SQLite!", file=sys.stderr)
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
