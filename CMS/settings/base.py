@@ -146,12 +146,11 @@ CLOUDINARY_STORAGE = {
 # Storage
 STORAGES = {
     "default": {
-        # ✅ CHANGED: Use Cloudinary for media files
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
-        # ✅ Use WhiteNoise storage
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        # ✅ More forgiving version
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
 
