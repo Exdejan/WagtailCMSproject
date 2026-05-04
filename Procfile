@@ -1,1 +1,1 @@
-web: gunicorn CMS.wsgi:application
+web: python manage.py migrate --settings=CMS.settings.base && gunicorn CMS.wsgi:application
