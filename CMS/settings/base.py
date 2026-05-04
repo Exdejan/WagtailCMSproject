@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import dj_database_url
+import cloudinary
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = PROJECT_DIR.parent
@@ -28,7 +29,8 @@ INSTALLED_APPS = [
     "wagtail.snippets",
     "wagtail.documents",
     "wagtail.images",
-    "cloudinary",  # ← ADDED
+    "cloudinary",
+    "cloudinary_storage",  # ← FIXED
     "wagtail.search",
     "wagtail.admin",
     "wagtail",
@@ -80,7 +82,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "CMS.wsgi.application"
 
 
-# ✅ DATABASE (Railway-compatible)
+# DATABASE (Railway-compatible)
 DATABASES = {
     "default": dj_database_url.config(
         default="sqlite:///db.sqlite3",
@@ -156,14 +158,13 @@ WAGTAILDOCS_EXTENSIONS = [
 # ========================================
 # CLOUDINARY CONFIGURATION
 # ========================================
-import cloudinary
 
 CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL')
 
 if CLOUDINARY_URL:
     cloudinary.config(cloudinary_url=CLOUDINARY_URL)
-    
+
     # Use Cloudinary for media files only
     STORAGES["default"] = {
-        "BACKEND": "cloudinary.storage.MediaCloudinaryStorage",
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",  # ← FIXED
     }
