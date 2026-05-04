@@ -144,15 +144,15 @@ CLOUDINARY_STORAGE = {
 
 
 # Storage
+# Storage
 STORAGES = {
     "default": {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
-    "staticfiles": {
-        # ✅ More forgiving version
-        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
-    },
 }
+
+# WhiteNoise static files (using legacy setting)
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10_000
