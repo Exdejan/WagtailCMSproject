@@ -114,7 +114,7 @@ STATICFILES_FINDERS = [
 
 STATICFILES_DIRS = [
     PROJECT_DIR / "static",      # /app/CMS/static  (CMS.css, CMS.js live here)
-    BASE_DIR / "home" / "static", # /app/home/static  (home_page.css lives here)
+    
 ]
 
 STATIC_ROOT = PROJECT_DIR / "staticfiles"
