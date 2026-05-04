@@ -20,7 +20,5 @@ db.sqlite3
 .DS_Store
 Thumbs.db
 
-# Static/media (optional depending on setup)
-media/
+# Static/media
 staticfiles/
-db.sqlite3
