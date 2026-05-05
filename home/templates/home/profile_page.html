@@ -5,7 +5,7 @@
 
 {% block extra_css %}
     {{ block.super }}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/home_page.css' %}?v=2">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/profile_page.css' %}?v=2">
 {% endblock %}
 
 {% block content %}
@@ -13,7 +13,7 @@
         <header class="topbar">
             <p class="logo-text">Our Favorites ✨</p>
             <nav class="topnav" aria-label="Main sections">
-                <a href="#home">Home</a>
+                <a href="{% pageurl page.get_parent %}">Home</a>
                 {% if page.hobbies_title or page.hobbies_cards %}
                     <a href="#hobbies">{{ page.hobbies_title|default:"Hobbies" }}</a>
                 {% endif %}
