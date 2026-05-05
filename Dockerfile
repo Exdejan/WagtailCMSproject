@@ -48,4 +48,4 @@ USER wagtail
 RUN python manage.py collectstatic --noinput --clear
 
 # Run migrations + start server
-CMD set -xe; python manage.py migrate --noinput; gunicorn CMS.wsgi:application
+CMD set -xe; python manage.py migrate --noinput; gunicorn CMS.wsgi:application --bind 0.0.0.0:8080 --worker-tmp-dir /dev/shm
