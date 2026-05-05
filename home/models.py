@@ -34,16 +34,15 @@ class HeroPolaroidBlock(blocks.StructBlock):
 # ─────────────────────────────────────────────
 
 class HomeQuickLinkBlock(blocks.StructBlock):
-    icon = ImageChooserBlock(required=False, help_text="Small icon image (shown above title)")
     title = blocks.CharBlock(required=True, max_length=255)
     description = blocks.TextBlock(required=False)
     link_label = blocks.CharBlock(
         required=False, max_length=100,
-        help_text="CTA text, e.g. 'View Hobbies'"
+        help_text="CTA text, e.g. 'Browse Profiles'"
     )
     link_anchor = blocks.CharBlock(
         required=False, max_length=100,
-        help_text="Anchor id without #, e.g. 'hobbies'"
+        help_text="Anchor id without #, e.g. 'creators'"
     )
 
     class Meta:
@@ -53,7 +52,10 @@ class HomeQuickLinkBlock(blocks.StructBlock):
 
 class CreatorBlock(blocks.StructBlock):
     name = blocks.CharBlock(required=True, max_length=255)
-    bio = blocks.TextBlock(required=False)
+    bio = blocks.TextBlock(
+        required=False,
+        help_text="Short one-liner shown on the home page card"
+    )
     avatar = ImageChooserBlock(required=False)
     profile_page = blocks.PageChooserBlock(
         required=False,
@@ -111,58 +113,82 @@ class HomePage(Page):
 
     # ── Topbar ──
     site_title = models.CharField(
-        max_length=255, blank=True, default="Our Favorites ✨",
+        max_length=255, blank=True, default="Artist Archive ✨",
         help_text="Logo text shown top-left"
-    )
-    nav_links = StreamField([
-        ("link", NavLinkBlock())
-    ], blank=True, use_json_field=True, help_text="Nav links between Home and Contact")
-    contact_label = models.CharField(
-        max_length=100, blank=True, default="Contact Us",
-        help_text="Contact button label (leave blank to hide)"
-    )
-    contact_url = models.CharField(
-        max_length=255, blank=True,
-        help_text="Contact button URL or mailto:"
     )
 
     # ── Hero ──
-    hero_micro_title = models.CharField(max_length=255, blank=True)
-    hero_heading = models.CharField(max_length=255, blank=True)
-    hero_subtitle = models.CharField(max_length=255, blank=True)
-    hero_description = models.TextField(blank=True)
-    hero_cta_text = models.CharField(max_length=100, blank=True)
-    hero_cta_anchor = models.CharField(max_length=100, blank=True)
+    hero_micro_title = models.CharField(
+        max_length=255, blank=True,
+        help_text="Small uppercase label above heading, e.g. 'A personal world of favorites'"
+    )
+    hero_heading = models.CharField(
+        max_length=255, blank=True,
+        help_text="Large heading, e.g. 'Artist Archive'"
+    )
+    hero_subtitle = models.CharField(
+        max_length=255, blank=True,
+        help_text="Italic green subtitle below heading, e.g. 'Our favorite things, our favorite artists.'"
+    )
+    hero_description = models.TextField(
+        blank=True,
+        help_text="Short paragraph describing the site"
+    )
+    hero_cta_text = models.CharField(
+        max_length=100, blank=True,
+        help_text="Button text, e.g. 'Meet the Creators'"
+    )
+    hero_cta_anchor = models.CharField(
+        max_length=100, blank=True,
+        help_text="Anchor id the button scrolls to, e.g. 'creators'"
+    )
     hero_polaroids = StreamField([
         ("polaroid", HeroPolaroidBlock())
-    ], blank=True, use_json_field=True)
+    ], blank=True, use_json_field=True,
+        help_text="Up to 3 polaroid cards shown on the right side of the hero"
+    )
 
     # ── Quick links ──
     quick_links = StreamField([
         ("quick_link", HomeQuickLinkBlock())
-    ], blank=True, use_json_field=True)
+    ], blank=True, use_json_field=True,
+        help_text="Row of small cards below the hero — use to highlight key sections"
+    )
 
     # ── Meet the Creators ──
-    creators_heading = models.CharField(max_length=255, blank=True, default="Meet the Creators")
-    creators_subheading = models.CharField(max_length=255, blank=True)
+    creators_heading = models.CharField(
+        max_length=255, blank=True, default="Meet the Creators",
+        help_text="Section heading, e.g. 'Meet the Creators'"
+    )
+    creators_subheading = models.CharField(
+        max_length=255, blank=True,
+        help_text="Optional subtitle below the heading"
+    )
     creators = StreamField([
         ("creator", CreatorBlock())
-    ], blank=True, use_json_field=True)
+    ], blank=True, use_json_field=True,
+        help_text="Each creator gets a card with avatar, name, bio, and a link to their profile page"
+    )
 
     # ── Footer ──
-    footer_text = models.CharField(max_length=255, blank=True)
+    footer_text = models.CharField(
+        max_length=255, blank=True,
+        help_text="Small footer line, e.g. '© 2025 Artist Archive — Made with ♥'"
+    )
 
     # Legacy fields (kept so existing migrations don't break)
     subtitle = models.CharField(max_length=250, blank=True)
     body = RichTextField(blank=True)
+    nav_links = StreamField([
+        ("link", NavLinkBlock())
+    ], blank=True, use_json_field=True)
+    contact_label = models.CharField(max_length=100, blank=True)
+    contact_url = models.CharField(max_length=255, blank=True)
 
     content_panels = Page.content_panels + [
         MultiFieldPanel([
             FieldPanel("site_title"),
-            FieldPanel("nav_links"),
-            FieldPanel("contact_label"),
-            FieldPanel("contact_url"),
-        ], heading="Topbar / Navigation"),
+        ], heading="Topbar"),
 
         MultiFieldPanel([
             FieldPanel("hero_micro_title"),
@@ -174,7 +200,9 @@ class HomePage(Page):
             FieldPanel("hero_polaroids"),
         ], heading="Hero Section"),
 
-        FieldPanel("quick_links"),
+        MultiFieldPanel([
+            FieldPanel("quick_links"),
+        ], heading="Quick Links Bar"),
 
         MultiFieldPanel([
             FieldPanel("creators_heading"),
@@ -182,7 +210,9 @@ class HomePage(Page):
             FieldPanel("creators"),
         ], heading="Meet the Creators"),
 
-        FieldPanel("footer_text"),
+        MultiFieldPanel([
+            FieldPanel("footer_text"),
+        ], heading="Footer"),
     ]
 
     subpage_types = ['home.EdrianeProfilePage']

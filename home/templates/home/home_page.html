@@ -5,7 +5,7 @@
 
 {% block extra_css %}
     {{ block.super }}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/home_page.css' %}?v=2">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home_page.css' %}?v=3">
 {% endblock %}
 
 {% block content %}
@@ -14,19 +14,13 @@
     {# ── TOPBAR ── #}
     <header class="topbar">
         <p class="logo-text">{{ page.site_title|default:"Artist Archive ✨" }}</p>
-
-        <nav class="topnav" aria-label="Main sections">
+        <nav class="topnav" aria-label="Main navigation">
             <a href="#home">Home</a>
-            {% for link in page.nav_links %}
-                <a href="#{{ link.value.anchor }}">{{ link.value.label }}</a>
-            {% endfor %}
-            {% if page.contact_label and page.contact_url %}
-                <a href="{{ page.contact_url }}" class="contact-btn">{{ page.contact_label }}</a>
-            {% endif %}
+            <a href="#creators">Profiles</a>
         </nav>
-
         <div class="profile-switcher">
-            <button type="button" id="profile-switcher-button" class="contact-btn" aria-haspopup="true" aria-expanded="false">
+            <button type="button" id="profile-switcher-button" class="contact-btn"
+                    aria-haspopup="true" aria-expanded="false">
                 Switch profile ▾
             </button>
             <ul id="profile-switcher-menu" class="profile-switcher-menu" aria-label="Select profile">
@@ -43,7 +37,7 @@
     <main>
 
         {# ── HERO ── #}
-        <section class="hero-band" id="home-hero">
+        <section class="hero-band" id="hero">
             <div class="hero-copy">
                 {% if page.hero_micro_title %}
                     <p class="micro-title">{{ page.hero_micro_title }}</p>
@@ -52,18 +46,18 @@
                     <h1>{{ page.hero_heading }}</h1>
                 {% endif %}
                 {% if page.hero_subtitle %}
-                    <h2 class="hero-subtitle">{{ page.hero_subtitle }}</h2>
+                    <h2>{{ page.hero_subtitle }}</h2>
                 {% endif %}
                 {% if page.hero_description %}
-                    <p class="hero-description">{{ page.hero_description }}</p>
+                    <p>{{ page.hero_description }}</p>
                 {% endif %}
                 {% if page.hero_cta_text and page.hero_cta_anchor %}
-                    <a class="primary-cta" href="{{ page.hero_cta_anchor }}">{{ page.hero_cta_text }}</a>
+                    <a class="primary-cta" href="#{{ page.hero_cta_anchor }}">{{ page.hero_cta_text }}</a>
                 {% endif %}
             </div>
 
             {% if page.hero_polaroids %}
-                <div class="hero-polaroids" aria-label="Featured categories">
+                <div class="hero-polaroids" aria-label="Featured profiles">
                     {% for block in page.hero_polaroids %}
                         <article class="polaroid{% if forloop.counter == 2 %} tilt-right{% elif forloop.counter == 3 %} tilt-left{% endif %}">
                             <div class="image-slot">
@@ -80,20 +74,17 @@
 
         {# ── QUICK LINKS ── #}
         {% if page.quick_links %}
-            <section class="quick-links" aria-label="Favorite categories">
+            <section class="quick-links" aria-label="Quick navigation">
                 {% for block in page.quick_links %}
-                    <article class="quick-link-card">
-                        {% if block.value.icon %}
-                            <div class="quick-link-icon">
-                                {% image block.value.icon fill-60x60 %}
-                            </div>
-                        {% endif %}
+                    <article>
                         <h3>{{ block.value.title }}</h3>
                         {% if block.value.description %}
                             <p>{{ block.value.description }}</p>
                         {% endif %}
                         {% if block.value.link_label and block.value.link_anchor %}
-                            <a class="quick-link-cta" href="#{{ block.value.link_anchor }}">{{ block.value.link_label }} →</a>
+                            <a class="ql-cta" href="#{{ block.value.link_anchor }}">
+                                {{ block.value.link_label }} →
+                            </a>
                         {% endif %}
                     </article>
                 {% endfor %}
@@ -102,7 +93,7 @@
 
         {# ── MEET THE CREATORS ── #}
         {% if page.creators_heading or page.creators %}
-            <section class="creators-section section-block" id="creators">
+            <section class="section-block" id="creators">
                 <div class="section-head">
                     {% if page.creators_heading %}
                         <h2>{{ page.creators_heading }}</h2>
@@ -116,16 +107,16 @@
                     <div class="creators-grid">
                         {% for block in page.creators %}
                             <article class="creator-card">
-                                {% if block.value.avatar %}
-                                    <div class="creator-avatar">
-                                        {% image block.value.avatar fill-160x160 %}
-                                    </div>
-                                {% else %}
-                                    <div class="creator-avatar creator-avatar--placeholder">
-                                        <span>{{ block.value.name|slice:":1" }}</span>
-                                    </div>
-                                {% endif %}
-                                <div class="creator-info">
+                                <div class="creator-avatar">
+                                    {% if block.value.avatar %}
+                                        {% image block.value.avatar fill-120x120 %}
+                                    {% else %}
+                                        <span class="avatar-initial">
+                                            {{ block.value.name|slice:":1" }}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                <div class="creator-body">
                                     <h3>{{ block.value.name }}</h3>
                                     {% if block.value.bio %}
                                         <p>{{ block.value.bio }}</p>
@@ -143,7 +134,7 @@
             </section>
         {% endif %}
 
-        {# ── FOOTER NOTE ── #}
+        {# ── FOOTER ── #}
         {% if page.footer_text %}
             <footer class="footer-note">
                 <p>{{ page.footer_text }}</p>
@@ -155,15 +146,13 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-
-        // ── Profile switcher dropdown ──
         var button = document.getElementById('profile-switcher-button');
-        var menu = document.getElementById('profile-switcher-menu');
+        var menu   = document.getElementById('profile-switcher-menu');
         if (button && menu) {
             button.addEventListener('click', function (e) {
                 e.stopPropagation();
-                var isOpen = menu.classList.toggle('open');
-                button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                var open = menu.classList.toggle('open');
+                button.setAttribute('aria-expanded', String(open));
             });
             document.addEventListener('click', function () {
                 menu.classList.remove('open');
@@ -171,22 +160,6 @@
             });
             menu.addEventListener('click', function (e) { e.stopPropagation(); });
         }
-
-        // ── Staggered fade-in on scroll ──
-        var observer = new IntersectionObserver(function (entries) {
-            entries.forEach(function (entry) {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.creator-card, .quick-link-card, .polaroid').forEach(function (el, i) {
-            el.style.transitionDelay = (i * 80) + 'ms';
-            observer.observe(el);
-        });
-
     });
 </script>
 {% endblock %}
