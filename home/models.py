@@ -120,15 +120,15 @@ class HomePage(Page):
     # ── Hero ──
     hero_micro_title = models.CharField(
         max_length=255, blank=True,
-        help_text="Small uppercase label above heading, e.g. 'A personal world of favorites'"
+        help_text="Small uppercase eyebrow label, e.g. 'A personal world of favorites'"
     )
     hero_heading = models.CharField(
         max_length=255, blank=True,
-        help_text="Large heading, e.g. 'Artist Archive'"
+        help_text="Large display heading, e.g. 'Artist Archive'"
     )
     hero_subtitle = models.CharField(
         max_length=255, blank=True,
-        help_text="Italic green subtitle below heading, e.g. 'Our favorite things, our favorite artists.'"
+        help_text="Green italic subtitle, e.g. 'Our favorite things, our favorite artists.'"
     )
     hero_description = models.TextField(
         blank=True,
@@ -136,29 +136,29 @@ class HomePage(Page):
     )
     hero_cta_text = models.CharField(
         max_length=100, blank=True,
-        help_text="Button text, e.g. 'Meet the Creators'"
+        help_text="Button label, e.g. 'Meet the Creators'"
     )
     hero_cta_anchor = models.CharField(
         max_length=100, blank=True,
-        help_text="Anchor id the button scrolls to, e.g. 'creators'"
+        help_text="Section id the button scrolls to, e.g. 'creators'"
     )
     hero_polaroids = StreamField([
         ("polaroid", HeroPolaroidBlock())
     ], blank=True, use_json_field=True,
-        help_text="Up to 3 polaroid cards shown on the right side of the hero"
+        help_text="Up to 3 polaroid-style cards displayed beside the hero copy"
     )
 
-    # ── Quick links ──
+    # ── Quick links bar ──
     quick_links = StreamField([
         ("quick_link", HomeQuickLinkBlock())
     ], blank=True, use_json_field=True,
-        help_text="Row of small cards below the hero — use to highlight key sections"
+        help_text="Row of small cards below the hero — highlight key sections"
     )
 
     # ── Meet the Creators ──
     creators_heading = models.CharField(
         max_length=255, blank=True, default="Meet the Creators",
-        help_text="Section heading, e.g. 'Meet the Creators'"
+        help_text="Section heading"
     )
     creators_subheading = models.CharField(
         max_length=255, blank=True,
@@ -167,7 +167,7 @@ class HomePage(Page):
     creators = StreamField([
         ("creator", CreatorBlock())
     ], blank=True, use_json_field=True,
-        help_text="Each creator gets a card with avatar, name, bio, and a link to their profile page"
+        help_text="Each creator card shows avatar, name, bio, and a link to their profile"
     )
 
     # ── Footer ──
@@ -175,15 +175,6 @@ class HomePage(Page):
         max_length=255, blank=True,
         help_text="Small footer line, e.g. '© 2025 Artist Archive — Made with ♥'"
     )
-
-    # Legacy fields (kept so existing migrations don't break)
-    subtitle = models.CharField(max_length=250, blank=True)
-    body = RichTextField(blank=True)
-    nav_links = StreamField([
-        ("link", NavLinkBlock())
-    ], blank=True, use_json_field=True)
-    contact_label = models.CharField(max_length=100, blank=True)
-    contact_url = models.CharField(max_length=255, blank=True)
 
     content_panels = Page.content_panels + [
         MultiFieldPanel([

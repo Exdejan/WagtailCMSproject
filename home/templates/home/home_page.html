@@ -1,55 +1,53 @@
 {% extends "base.html" %}
 {% load static wagtailcore_tags wagtailimages_tags %}
 
-{% block body_class %}home-page{% endblock %}
+{% block body_class %}home-landing{% endblock %}
 
 {% block extra_css %}
     {{ block.super }}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/home_page.css' %}?v=3">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home_page.css' %}?v=1">
 {% endblock %}
 
 {% block content %}
-<div class="favorites-shell" id="home">
+<div class="landing-shell">
 
     {# ── TOPBAR ── #}
     <header class="topbar">
         <p class="logo-text">{{ page.site_title|default:"Artist Archive ✨" }}</p>
         <nav class="topnav" aria-label="Main navigation">
             <a href="#home">Home</a>
-            <a href="#creators">Profiles</a>
+            {% if page.creators %}
+                <a href="#creators">Profiles</a>
+            {% endif %}
         </nav>
         <div class="profile-switcher">
-            <button type="button" id="profile-switcher-button" class="contact-btn"
-                    aria-haspopup="true" aria-expanded="false">
+            <button type="button" id="profile-switcher-button" class="contact-btn" aria-haspopup="true" aria-expanded="false">
                 Switch profile ▾
             </button>
             <ul id="profile-switcher-menu" class="profile-switcher-menu" aria-label="Select profile">
                 {% for profile in profile_pages %}
-                    <li><a href="{{ profile.url }}">Switch to {{ profile.title }}</a></li>
+                    <li><a href="{{ profile.url }}">{{ profile.title }}</a></li>
+                {% empty %}
+                    <li class="disabled">No profiles yet</li>
                 {% endfor %}
-                {% if profile_pages|length == 0 %}
-                    <li class="disabled">No profiles available</li>
-                {% endif %}
             </ul>
         </div>
     </header>
 
-    <main>
+    <main id="home">
 
         {# ── HERO ── #}
-        <section class="hero-band" id="hero">
+        <section class="hero-band">
             <div class="hero-copy">
                 {% if page.hero_micro_title %}
                     <p class="micro-title">{{ page.hero_micro_title }}</p>
                 {% endif %}
-                {% if page.hero_heading %}
-                    <h1>{{ page.hero_heading }}</h1>
-                {% endif %}
+                <h1>{{ page.hero_heading|default:page.title }}</h1>
                 {% if page.hero_subtitle %}
-                    <h2>{{ page.hero_subtitle }}</h2>
+                    <h2 class="hero-sub">{{ page.hero_subtitle }}</h2>
                 {% endif %}
                 {% if page.hero_description %}
-                    <p>{{ page.hero_description }}</p>
+                    <p class="hero-desc">{{ page.hero_description }}</p>
                 {% endif %}
                 {% if page.hero_cta_text and page.hero_cta_anchor %}
                     <a class="primary-cta" href="#{{ page.hero_cta_anchor }}">{{ page.hero_cta_text }}</a>
@@ -57,7 +55,7 @@
             </div>
 
             {% if page.hero_polaroids %}
-                <div class="hero-polaroids" aria-label="Featured profiles">
+                <div class="hero-polaroids" aria-label="Featured snapshots">
                     {% for block in page.hero_polaroids %}
                         <article class="polaroid{% if forloop.counter == 2 %} tilt-right{% elif forloop.counter == 3 %} tilt-left{% endif %}">
                             <div class="image-slot">
@@ -74,17 +72,15 @@
 
         {# ── QUICK LINKS ── #}
         {% if page.quick_links %}
-            <section class="quick-links" aria-label="Quick navigation">
+            <section class="quick-links" aria-label="What's inside">
                 {% for block in page.quick_links %}
-                    <article>
+                    <article class="ql-card">
                         <h3>{{ block.value.title }}</h3>
                         {% if block.value.description %}
                             <p>{{ block.value.description }}</p>
                         {% endif %}
                         {% if block.value.link_label and block.value.link_anchor %}
-                            <a class="ql-cta" href="#{{ block.value.link_anchor }}">
-                                {{ block.value.link_label }} →
-                            </a>
+                            <a class="ql-link" href="#{{ block.value.link_anchor }}">{{ block.value.link_label }} →</a>
                         {% endif %}
                     </article>
                 {% endfor %}
@@ -92,67 +88,56 @@
         {% endif %}
 
         {# ── MEET THE CREATORS ── #}
-        {% if page.creators_heading or page.creators %}
-            <section class="section-block" id="creators">
+        {% if page.creators %}
+            <section class="section-block creators-section" id="creators">
                 <div class="section-head">
-                    {% if page.creators_heading %}
-                        <h2>{{ page.creators_heading }}</h2>
-                    {% endif %}
+                    <h2>{{ page.creators_heading|default:"Meet the Creators" }}</h2>
                     {% if page.creators_subheading %}
                         <p>{{ page.creators_subheading }}</p>
                     {% endif %}
                 </div>
-
-                {% if page.creators %}
-                    <div class="creators-grid">
-                        {% for block in page.creators %}
-                            <article class="creator-card">
-                                <div class="creator-avatar">
-                                    {% if block.value.avatar %}
-                                        {% image block.value.avatar fill-120x120 %}
-                                    {% else %}
-                                        <span class="avatar-initial">
-                                            {{ block.value.name|slice:":1" }}
-                                        </span>
-                                    {% endif %}
-                                </div>
-                                <div class="creator-body">
-                                    <h3>{{ block.value.name }}</h3>
-                                    {% if block.value.bio %}
-                                        <p>{{ block.value.bio }}</p>
-                                    {% endif %}
-                                    {% if block.value.profile_page %}
-                                        <a href="{{ block.value.profile_page.url }}" class="creator-link">
-                                            View Profile →
-                                        </a>
-                                    {% endif %}
-                                </div>
-                            </article>
-                        {% endfor %}
-                    </div>
-                {% endif %}
+                <div class="creator-grid">
+                    {% for block in page.creators %}
+                        <article class="creator-card">
+                            <div class="creator-avatar">
+                                {% if block.value.avatar %}
+                                    {% image block.value.avatar fill-160x160 %}
+                                {% else %}
+                                    <div class="avatar-placeholder">{{ block.value.name|slice:":1" }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="creator-info">
+                                <h3>{{ block.value.name }}</h3>
+                                {% if block.value.bio %}
+                                    <p>{{ block.value.bio }}</p>
+                                {% endif %}
+                                {% if block.value.profile_page %}
+                                    <a class="view-profile-btn" href="{% pageurl block.value.profile_page %}">View Archive →</a>
+                                {% endif %}
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
             </section>
         {% endif %}
 
-        {# ── FOOTER ── #}
-        {% if page.footer_text %}
-            <footer class="footer-note">
-                <p>{{ page.footer_text }}</p>
-            </footer>
-        {% endif %}
-
     </main>
+
+    {% if page.footer_text %}
+        <footer class="footer-note">{{ page.footer_text }}</footer>
+    {% endif %}
+
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var button = document.getElementById('profile-switcher-button');
-        var menu   = document.getElementById('profile-switcher-menu');
+        var menu = document.getElementById('profile-switcher-menu');
         if (button && menu) {
             button.addEventListener('click', function (e) {
                 e.stopPropagation();
-                var open = menu.classList.toggle('open');
-                button.setAttribute('aria-expanded', String(open));
+                var isOpen = menu.classList.toggle('open');
+                button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
             });
             document.addEventListener('click', function () {
                 menu.classList.remove('open');
