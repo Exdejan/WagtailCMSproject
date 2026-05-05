@@ -155,3 +155,19 @@ WAGTAILADMIN_BASE_URL = "https://ourfavorites.up.railway.app"
 WAGTAILDOCS_EXTENSIONS = [
     'csv', 'docx', 'key', 'odt', 'pdf', 'pptx', 'rtf', 'txt', 'xlsx', 'zip'
 ]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# BRO WHAT IS YOUR PROBLEM
