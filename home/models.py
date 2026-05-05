@@ -4,21 +4,11 @@ from wagtail import blocks
 from wagtail.fields import RichTextField, StreamField
 from wagtail.images.blocks import ImageChooserBlock
 from wagtail.models import Page
-from wagtail.snippets.blocks import SnippetChooserBlock
 
 
 # ─────────────────────────────────────────────
-#  Shared / reusable blocks
+#  Shared blocks
 # ─────────────────────────────────────────────
-
-class NavLinkBlock(blocks.StructBlock):
-    label = blocks.CharBlock(max_length=100, help_text="Link text shown in nav bar")
-    anchor = blocks.CharBlock(max_length=100, help_text="Anchor id without #, e.g. 'hobbies'")
-
-    class Meta:
-        icon = "link"
-        label = "Nav link"
-
 
 class HeroPolaroidBlock(blocks.StructBlock):
     title = blocks.CharBlock(required=True, max_length=255)
@@ -30,36 +20,37 @@ class HeroPolaroidBlock(blocks.StructBlock):
 
 
 # ─────────────────────────────────────────────
-#  HomePage-specific blocks
+#  HomePage blocks
 # ─────────────────────────────────────────────
 
 class HomeQuickLinkBlock(blocks.StructBlock):
     title = blocks.CharBlock(required=True, max_length=255)
     description = blocks.TextBlock(required=False)
+    icon_emoji = blocks.CharBlock(
+        required=False, max_length=8,
+        help_text="Single emoji for the card icon, e.g. 🎮 🍜 🎵"
+    )
     link_label = blocks.CharBlock(
         required=False, max_length=100,
-        help_text="CTA text, e.g. 'Browse Profiles'"
+        help_text="CTA text, e.g. 'View Games'"
     )
     link_anchor = blocks.CharBlock(
         required=False, max_length=100,
-        help_text="Anchor id without #, e.g. 'creators'"
+        help_text="Anchor id without #, e.g. 'games'"
     )
 
     class Meta:
         icon = "link"
-        label = "Quick link card"
+        label = "Feature card"
 
 
 class CreatorBlock(blocks.StructBlock):
     name = blocks.CharBlock(required=True, max_length=255)
-    bio = blocks.TextBlock(
-        required=False,
-        help_text="Short one-liner shown on the home page card"
-    )
+    bio = blocks.TextBlock(required=False, help_text="Short one-liner shown on the card")
     avatar = ImageChooserBlock(required=False)
     profile_page = blocks.PageChooserBlock(
         required=False,
-        help_text="Link to this person's profile page"
+        help_text="Links the 'View Archive' button to this person's profile page"
     )
 
     class Meta:
@@ -68,7 +59,7 @@ class CreatorBlock(blocks.StructBlock):
 
 
 # ─────────────────────────────────────────────
-#  ProfilePage blocks (unchanged)
+#  ProfilePage blocks
 # ─────────────────────────────────────────────
 
 class ProfileQuickLinkBlock(blocks.StructBlock):
@@ -111,48 +102,60 @@ class ProfileSectionBlock(blocks.StructBlock):
 class HomePage(Page):
     template = "home/home_page.html"
 
-    # ── Topbar ──
+    # ── Navbar ──
     site_title = models.CharField(
         max_length=255, blank=True, default="Artist Archive ✨",
-        help_text="Logo text shown top-left"
+        help_text="Logo text shown top-left in the navbar"
+    )
+    about_label = models.CharField(
+        max_length=100, blank=True,
+        help_text="Optional 'About Us' nav link label (links to #about)"
+    )
+    contact_text = models.CharField(
+        max_length=100, blank=True,
+        help_text="Contact Us button label in the navbar, e.g. 'Contact Us'"
+    )
+    contact_url = models.CharField(
+        max_length=255, blank=True,
+        help_text="URL or mailto: for the contact button"
     )
 
     # ── Hero ──
     hero_micro_title = models.CharField(
         max_length=255, blank=True,
-        help_text="Small uppercase eyebrow label, e.g. 'A personal world of favorites'"
+        help_text="Small uppercase eyebrow label above the main heading"
     )
     hero_heading = models.CharField(
         max_length=255, blank=True,
-        help_text="Large display heading, e.g. 'Artist Archive'"
+        help_text="Main hero heading, e.g. 'Our Favorites'"
     )
     hero_subtitle = models.CharField(
         max_length=255, blank=True,
-        help_text="Green italic subtitle, e.g. 'Our favorite things, our favorite artists.'"
+        help_text="Italic green continuation of the heading, e.g. 'Our World.'"
     )
     hero_description = models.TextField(
         blank=True,
-        help_text="Short paragraph describing the site"
+        help_text="Short paragraph below the heading"
     )
     hero_cta_text = models.CharField(
         max_length=100, blank=True,
-        help_text="Button label, e.g. 'Meet the Creators'"
+        help_text="CTA button label, e.g. 'Explore Our Favorites'"
     )
     hero_cta_anchor = models.CharField(
         max_length=100, blank=True,
-        help_text="Section id the button scrolls to, e.g. 'creators'"
+        help_text="Section id the CTA scrolls to, e.g. 'creators'"
     )
     hero_polaroids = StreamField([
         ("polaroid", HeroPolaroidBlock())
     ], blank=True, use_json_field=True,
-        help_text="Up to 3 polaroid-style cards displayed beside the hero copy"
+        help_text="Up to 3 polaroid-style photo cards stacked on the right side of the hero"
     )
 
-    # ── Quick links bar ──
+    # ── Feature cards (quick links) ──
     quick_links = StreamField([
         ("quick_link", HomeQuickLinkBlock())
     ], blank=True, use_json_field=True,
-        help_text="Row of small cards below the hero — highlight key sections"
+        help_text="Horizontal strip of feature cards below the hero — one per section"
     )
 
     # ── Meet the Creators ──
@@ -167,19 +170,22 @@ class HomePage(Page):
     creators = StreamField([
         ("creator", CreatorBlock())
     ], blank=True, use_json_field=True,
-        help_text="Each creator card shows avatar, name, bio, and a link to their profile"
+        help_text="One card per creator — avatar, name, bio, and link to their profile"
     )
 
     # ── Footer ──
     footer_text = models.CharField(
         max_length=255, blank=True,
-        help_text="Small footer line, e.g. '© 2025 Artist Archive — Made with ♥'"
+        help_text="Footer line, e.g. '© 2025 Artist Archive. All rights reserved. ♡'"
     )
 
     content_panels = Page.content_panels + [
         MultiFieldPanel([
             FieldPanel("site_title"),
-        ], heading="Topbar"),
+            FieldPanel("about_label"),
+            FieldPanel("contact_text"),
+            FieldPanel("contact_url"),
+        ], heading="Navbar"),
 
         MultiFieldPanel([
             FieldPanel("hero_micro_title"),
@@ -193,7 +199,7 @@ class HomePage(Page):
 
         MultiFieldPanel([
             FieldPanel("quick_links"),
-        ], heading="Quick Links Bar"),
+        ], heading="Feature Cards"),
 
         MultiFieldPanel([
             FieldPanel("creators_heading"),
@@ -221,16 +227,12 @@ class EdrianeProfilePage(Page):
     template = "home/profile_page.html"
 
     profile_image = models.ForeignKey(
-        "wagtailimages.Image",
-        null=True, blank=True,
-        on_delete=models.SET_NULL,
-        related_name="+"
+        "wagtailimages.Image", null=True, blank=True,
+        on_delete=models.SET_NULL, related_name="+"
     )
     hero_image = models.ForeignKey(
-        "wagtailimages.Image",
-        null=True, blank=True,
-        on_delete=models.SET_NULL,
-        related_name="+"
+        "wagtailimages.Image", null=True, blank=True,
+        on_delete=models.SET_NULL, related_name="+"
     )
     hero_polaroids = StreamField([
         ("polaroid", HeroPolaroidBlock())
