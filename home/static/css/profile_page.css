@@ -412,6 +412,15 @@ body.home-page {
     transform: translate(-50%, 0);
 }
 
+.favorite-image-card p {
+    margin: 0.6rem 0.8rem 0.8rem;
+    padding: 0 0.2rem;
+    font-size: 0.92rem;
+    color: var(--muted);
+    line-height: 1.45;
+}
+
+
 .about-card {
     margin-top: 1.1rem;
     border: 1px solid var(--line);
