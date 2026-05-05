@@ -1,161 +1,234 @@
 {% extends "base.html" %}
-{% load static wagtailcore_tags wagtailimages_tags %}
+{% load static %}
 
-{% block body_class %}home-page{% endblock %}
+{% block body_class %}landing-page{% endblock %}
 
 {% block extra_css %}
     {{ block.super }}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/home_page.css' %}?v=2">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home_page.css' %}">
 {% endblock %}
 
 {% block content %}
-    <div class="favorites-shell" id="home">
-        <header class="topbar">
-            <p class="logo-text">{{ page.site_title|default:"Artist Archive✨" }}</p>
+<div class="landing-shell">
 
-            <nav class="topnav" aria-label="Main sections">
-                <a href="#home">Home</a>
-                {% for link in page.nav_links %}
-                    <a href="#{{ link.value.anchor }}">{{ link.value.label }}</a>
-                {% endfor %}
-                {% if page.contact_label and page.contact_url %}
-                    <a href="{{ page.contact_url }}" class="contact-btn">{{ page.contact_label }}</a>
-                {% endif %}
-            </nav>
+    <!-- ── TOPBAR ── -->
+    <header class="topbar">
+        <p class="logo-text">Artist Archive ✨</p>
+        <nav class="topnav" aria-label="Main sections">
+            <a href="#featured">Featured</a>
+            <a href="#categories">Categories</a>
+            <a href="#spotlight">Spotlight</a>
+            <a href="#about">About</a>
+        </nav>
+        <a class="contact-btn" href="#">Explore Now</a>
+    </header>
 
-            <div class="profile-switcher">
-                <button type="button" id="profile-switcher-button" class="contact-btn" aria-haspopup="true" aria-expanded="false">
-                    Switch profile ▾
-                </button>
-                <ul id="profile-switcher-menu" class="profile-switcher-menu" aria-label="Select profile">
-                    {% for profile in profile_pages %}
-                        <li><a href="{{ profile.url }}">Switch to {{ profile.title }}</a></li>
-                    {% endfor %}
-                    {% if profile_pages|length == 0 %}
-                        <li class="disabled">No profiles available</li>
-                    {% endif %}
-                </ul>
+    <main>
+
+        <!-- ── HERO ── -->
+        <section class="hero-band">
+            <div class="hero-deco" aria-hidden="true">
+                <svg class="deco-swirl" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M 10 100 Q 50 10 100 100 Q 150 190 190 100" stroke="#5a7f5c" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                </svg>
+                <svg class="deco-heart" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M25 40 C25 40 5 28 5 16 A10 10 0 0 1 25 12 A10 10 0 0 1 45 16 C45 28 25 40 25 40Z" fill="none" stroke="#1f3f63" stroke-width="2"/>
+                </svg>
+                <span class="deco-star">✦</span>
             </div>
-        </header>
 
-        <main>
-            {# ── HERO ── #}
-            <section class="hero-band">
-                <div class="hero-copy">
-                    {% if page.hero_micro_title %}
-                        <p class="micro-title">{{ page.hero_micro_title }}</p>
-                    {% endif %}
-                    {% if page.hero_heading %}
-                        <h1>{{ page.hero_heading }}</h1>
-                    {% endif %}
-                    {% if page.hero_subtitle %}
-                        <h2>{{ page.hero_subtitle }}</h2>
-                    {% endif %}
-                    {% if page.hero_description %}
-                        <p>{{ page.hero_description }}</p>
-                    {% endif %}
-                    {% if page.hero_cta_text and page.hero_cta_anchor %}
-                        <a class="primary-cta" href="{{ page.hero_cta_anchor }}">{{ page.hero_cta_text }}</a>
-                    {% endif %}
+            <div class="hero-copy">
+                <p class="micro-title">The World's Art, One Place</p>
+                <h1>Where Every<br><em>Artist</em> Lives.</h1>
+                <p class="hero-desc">From Beyoncé's anthems to BTS's cultural wave, from Broadway stages to Manila's finest — Artist Archive is your living encyclopedia of global artistry.</p>
+                <div class="hero-actions">
+                    <a class="primary-cta" href="#featured">Start Exploring →</a>
+                    <a class="ghost-cta" href="#categories">Browse Categories</a>
                 </div>
+            </div>
 
-                {% if page.hero_polaroids %}
-                    <div class="hero-polaroids" aria-label="Featured categories">
-                        {% for block in page.hero_polaroids %}
-                            <article class="polaroid{% if forloop.counter == 2 %} tilt-right{% elif forloop.counter == 3 %} tilt-left{% endif %}">
-                                <div class="image-slot">
-                                    {% if block.value.image %}
-                                        {% image block.value.image fill-300x300 %}
-                                    {% endif %}
-                                </div>
-                                <p>{{ block.value.title }}</p>
-                            </article>
-                        {% endfor %}
+            <div class="hero-polaroids" aria-label="Featured artist categories">
+                <article class="polaroid">
+                    <div class="image-slot" style="background: linear-gradient(135deg,#1a0533,#5c1a8f);">
+                        <span class="slot-emoji">🎤</span>
                     </div>
-                {% endif %}
-            </section>
-
-            {# ── QUICK LINKS ── #}
-            {% if page.quick_links %}
-                <section class="quick-links" aria-label="Favorite categories">
-                    {% for block in page.quick_links %}
-                        <article>
-                            {% if block.value.icon %}
-                                <div class="quick-link-icon">
-                                    {% image block.value.icon fill-60x60 %}
-                                </div>
-                            {% endif %}
-                            <h3>{{ block.value.title }}</h3>
-                            <p>{{ block.value.description }}</p>
-                            {% if block.value.link_label and block.value.link_anchor %}
-                                <a class="quick-link-cta" href="#{{ block.value.link_anchor }}">{{ block.value.link_label }} →</a>
-                            {% endif %}
-                        </article>
-                    {% endfor %}
-                </section>
-            {% endif %}
-
-            {# ── MEET THE CREATORS ── #}
-            {% if page.creators_heading or page.creators %}
-                <section class="creators-section" id="creators">
-                    <div class="section-head">
-                        {% if page.creators_heading %}
-                            <h2>{{ page.creators_heading }}</h2>
-                        {% endif %}
-                        {% if page.creators_subheading %}
-                            <p>{{ page.creators_subheading }}</p>
-                        {% endif %}
+                    <p>Pop</p>
+                </article>
+                <article class="polaroid tilt-right">
+                    <div class="image-slot" style="background: linear-gradient(135deg,#0a1f3c,#1a4a7a);">
+                        <span class="slot-emoji">🎭</span>
                     </div>
-                    {% if page.creators %}
-                        <div class="creators-grid">
-                            {% for block in page.creators %}
-                                <article class="creator-card">
-                                    {% if block.value.avatar %}
-                                        <div class="creator-avatar">
-                                            {% image block.value.avatar fill-120x120 %}
-                                        </div>
-                                    {% endif %}
-                                    <h3>{{ block.value.name }}</h3>
-                                    {% if block.value.bio %}
-                                        <p>{{ block.value.bio }}</p>
-                                    {% endif %}
-                                    {% if block.value.profile_page %}
-                                        <a href="{{ block.value.profile_page.url }}" class="creator-link">View Profile →</a>
-                                    {% endif %}
-                                </article>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </section>
-            {% endif %}
+                    <p>Theater</p>
+                </article>
+                <article class="polaroid tilt-left">
+                    <div class="image-slot" style="background: linear-gradient(135deg,#1f3020,#3d6b40);">
+                        <span class="slot-emoji">🎶</span>
+                    </div>
+                    <p>OPM</p>
+                </article>
+            </div>
+        </section>
 
-            {# ── FOOTER NOTE ── #}
-            {% if page.footer_text %}
-                <footer class="footer-note">
-                    <p>{{ page.footer_text }}</p>
-                </footer>
-            {% endif %}
-        </main>
-    </div>
+        <!-- ── STATS STRIP ── -->
+        <section class="stats-strip" aria-label="Archive stats">
+            <div class="stat-item">
+                <span class="stat-num">10K+</span>
+                <span class="stat-label">Artists Archived</span>
+            </div>
+            <div class="stat-divider" aria-hidden="true">✦</div>
+            <div class="stat-item">
+                <span class="stat-num">80+</span>
+                <span class="stat-label">Countries</span>
+            </div>
+            <div class="stat-divider" aria-hidden="true">✦</div>
+            <div class="stat-item">
+                <span class="stat-num">50+</span>
+                <span class="stat-label">Genres & Styles</span>
+            </div>
+            <div class="stat-divider" aria-hidden="true">✦</div>
+            <div class="stat-item">
+                <span class="stat-num">∞</span>
+                <span class="stat-label">Stories to Tell</span>
+            </div>
+        </section>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var button = document.getElementById('profile-switcher-button');
-            var menu = document.getElementById('profile-switcher-menu');
-            if (button && menu) {
-                button.addEventListener('click', function(event) {
-                    event.stopPropagation();
-                    var isOpen = menu.classList.toggle('open');
-                    button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-                });
-                document.addEventListener('click', function() {
-                    menu.classList.remove('open');
-                    button.setAttribute('aria-expanded', 'false');
-                });
-                menu.addEventListener('click', function(event) {
-                    event.stopPropagation();
-                });
-            }
-        });
-    </script>
+        <!-- ── CATEGORIES QUICK-LINKS ── -->
+        <section class="categories-section" id="categories" aria-labelledby="cat-heading">
+            <div class="section-head">
+                <h2 id="cat-heading">Browse by Category</h2>
+                <p>Every corner of the artistic world, organized for you.</p>
+            </div>
+            <div class="cat-grid">
+                <a class="cat-card cat-music" href="#">
+                    <span class="cat-icon">🎵</span>
+                    <h3>Music</h3>
+                    <p>Pop, R&amp;B, K-Pop, Hip-Hop, OPM &amp; more</p>
+                </a>
+                <a class="cat-card cat-theater" href="#">
+                    <span class="cat-icon">🎭</span>
+                    <h3>Theater &amp; Stage</h3>
+                    <p>Broadway, West End, Ballet, Opera</p>
+                </a>
+                <a class="cat-card cat-film" href="#">
+                    <span class="cat-icon">🎬</span>
+                    <h3>Film &amp; TV</h3>
+                    <p>Actors, directors, and the stories they tell</p>
+                </a>
+                <a class="cat-card cat-visual" href="#">
+                    <span class="cat-icon">🎨</span>
+                    <h3>Visual Arts</h3>
+                    <p>Painters, photographers, illustrators</p>
+                </a>
+                <a class="cat-card cat-dance" href="#">
+                    <span class="cat-icon">💃</span>
+                    <h3>Dance</h3>
+                    <p>Contemporary, street, classical</p>
+                </a>
+                <a class="cat-card cat-more" href="#">
+                    <span class="cat-icon">✨</span>
+                    <h3>And More…</h3>
+                    <p>Literature, spoken word, performance art</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- ── FEATURED ARTISTS ── -->
+        <section class="section-block" id="featured" aria-labelledby="feat-heading">
+            <div class="section-head">
+                <h2 id="feat-heading">Featured Artists</h2>
+                <p>Icons from around the globe — their legacies live here.</p>
+            </div>
+            <div class="featured-grid">
+                <article class="feat-card feat-card--large">
+                    <div class="feat-img feat-img--beyonce">
+                        <span class="feat-emoji">👑</span>
+                    </div>
+                    <div class="feat-info">
+                        <span class="feat-tag">R&amp;B / Pop</span>
+                        <h3>Beyoncé</h3>
+                        <p>Grammy-record holder. Cultural architect. Queen.</p>
+                    </div>
+                </article>
+                <article class="feat-card">
+                    <div class="feat-img feat-img--bts">
+                        <span class="feat-emoji">💜</span>
+                    </div>
+                    <div class="feat-info">
+                        <span class="feat-tag">K-Pop</span>
+                        <h3>BTS</h3>
+                        <p>Global phenomenon from Seoul to everywhere.</p>
+                    </div>
+                </article>
+                <article class="feat-card">
+                    <div class="feat-img feat-img--nicki">
+                        <span class="feat-emoji">🎀</span>
+                    </div>
+                    <div class="feat-info">
+                        <span class="feat-tag">Hip-Hop / Rap</span>
+                        <h3>Nicki Minaj</h3>
+                        <p>The rap queen who rewrote the rulebook.</p>
+                    </div>
+                </article>
+                <article class="feat-card">
+                    <div class="feat-img feat-img--katseye">
+                        <span class="feat-emoji">🌺</span>
+                    </div>
+                    <div class="feat-info">
+                        <span class="feat-tag">K-Pop / Global</span>
+                        <h3>KATSEYE</h3>
+                        <p>A new chapter in global girl group history.</p>
+                    </div>
+                </article>
+                <article class="feat-card">
+                    <div class="feat-img feat-img--sarah">
+                        <span class="feat-emoji">🌸</span>
+                    </div>
+                    <div class="feat-info">
+                        <span class="feat-tag">OPM / Film</span>
+                        <h3>Sarah Geronimo</h3>
+                        <p>The Popstar ng Bayan — an institution in Philippine music.</p>
+                    </div>
+                </article>
+                <article class="feat-card">
+                    <div class="feat-img feat-img--regine">
+                        <span class="feat-emoji">🎙️</span>
+                    </div>
+                    <div class="feat-info">
+                        <span class="feat-tag">OPM / Theater</span>
+                        <h3>Regine Velasquez</h3>
+                        <p>Asia's Songbird — a voice that transcends generations.</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- ── SPOTLIGHT QUOTE ── -->
+        <section class="spotlight-band" id="spotlight">
+            <div class="spotlight-inner">
+                <p class="spotlight-label">✦ Artist Archive Believes</p>
+                <blockquote>
+                    "Art is not what you see,<br>but what you make others <em>feel.</em>"
+                </blockquote>
+                <p class="spotlight-credit">— Edgar Degas</p>
+            </div>
+        </section>
+
+        <!-- ── ABOUT ── -->
+        <section class="about-card" id="about">
+            <div class="about-icon" aria-hidden="true">🌍</div>
+            <div>
+                <h2>What is Artist Archive?</h2>
+                <p>A passion project born from a love of art in all its forms. We believe every artist — from the biggest global superstar to the most intimate theater performer — deserves to be remembered, celebrated, and discovered.</p>
+                <p>Whether you're looking up Beyoncé's discography, exploring Regine Velasquez's decades-long career, or finding your next favorite K-pop group, this is your home.</p>
+                <a class="primary-cta" style="display:inline-block; margin-top: 1rem;" href="#">Start Exploring →</a>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer-note">
+        <p>© 2024 Artist Archive · Made with ✨ for lovers of art everywhere.</p>
+    </footer>
+
+</div>
 {% endblock %}
