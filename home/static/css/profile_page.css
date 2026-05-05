@@ -341,17 +341,17 @@ body.home-page {
 .favorite-image-slot {
     min-height: 170px;
     width: 100%;
-    display: grid;
-    place-items: center;
-    padding: 1rem;
-    text-align: center;
-    background:
-        linear-gradient(180deg, rgba(12, 18, 28, 0.14), rgba(12, 18, 28, 0.45)),
-        linear-gradient(135deg, #eef3fb 0%, #f8efe5 100%);
-    color: rgba(255, 255, 255, 0.92);
-    font-size: 0.92rem;
-    letter-spacing: 0.03em;
-    transition: transform 220ms ease, filter 220ms ease;
+    overflow: hidden;
+    position: relative;
+    background: #f0f0f0; /* Fallback only if no image */
+}
+
+.favorite-image-slot img {
+    width: 100%;
+    height: 100%;
+    min-height: 170px;
+    object-fit: cover;
+    display: block;
 }
 
 .favorite-image-card:hover .favorite-image-slot {
@@ -359,7 +359,7 @@ body.home-page {
     filter: saturate(1.05);
 }
 
-.favorite-grid--food .favorite-image-slot {
+/* .favorite-grid--food .favorite-image-slot {
     background:
         linear-gradient(180deg, rgba(35, 22, 11, 0.12), rgba(35, 22, 11, 0.46)),
         linear-gradient(135deg, #fff3e2 0%, #ffd9bd 100%);
@@ -381,7 +381,7 @@ body.home-page {
     background:
         linear-gradient(180deg, rgba(16, 43, 30, 0.12), rgba(16, 43, 30, 0.44)),
         linear-gradient(135deg, #e8f5ea 0%, #bfe3c7 100%);
-}
+} */
 
 .favorite-image-label {
     position: absolute;
