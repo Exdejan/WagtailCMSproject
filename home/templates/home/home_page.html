@@ -20,7 +20,18 @@
             <a href="#spotlight">Spotlight</a>
             <a href="#about">About</a>
         </nav>
-        <a class="contact-btn" href="#">Explore Now</a>
+        <div class="explore-switcher">
+    <button type="button" id="explore-switcher-button" class="contact-btn" aria-haspopup="true" aria-expanded="false">
+        Explore Now ▾
+    </button>
+    <ul id="explore-switcher-menu" class="explore-switcher-menu" aria-label="Explore options">
+        {% for profile in profile_pages %}
+            <li><a href="{{ profile.url }}">{{ profile.title }}</a></li>
+        {% empty %}
+            <li class="disabled">No profiles available yet</li>
+        {% endfor %}
+    </ul>
+</div>
     </header>
 
     <main>
@@ -38,7 +49,7 @@
             </div>
 
             <div class="hero-copy">
-                <p class="micro-title">PEKPEK NA MATABA</p>
+                <p class="micro-title">The World's Art, One Place</p>
                 <h1>Where Every<br><em>Artist</em> Lives.</h1>
                 <p class="hero-desc">From Beyoncé's anthems to BTS's cultural wave, from Broadway stages to Manila's finest — Artist Archive is your living encyclopedia of global artistry.</p>
                 <div class="hero-actions">
@@ -231,4 +242,25 @@
     </footer>
 
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var button = document.getElementById('explore-switcher-button');
+        var menu = document.getElementById('explore-switcher-menu');
+        if (button && menu) {
+            button.addEventListener('click', function (event) {
+                event.stopPropagation();
+                var isOpen = menu.classList.toggle('open');
+                button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            });
+            document.addEventListener('click', function () {
+                menu.classList.remove('open');
+                button.setAttribute('aria-expanded', 'false');
+            });
+            menu.addEventListener('click', function (event) {
+                event.stopPropagation();
+            });
+        }
+    });
+</script>
 {% endblock %}
