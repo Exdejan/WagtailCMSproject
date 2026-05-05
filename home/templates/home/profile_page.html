@@ -131,18 +131,18 @@
                         </div>
                         <div class="favorite-grid favorite-grid--{{ section.value.section_id }}">
                             {% for item in section.value.items %}
-                                <article class="favorite-image-card">
-                                    <div class="favorite-image-slot">
-                                        {% if item.value.image %}
-                                            {% image item.value.image fill-360x240 %}
-                                        {% endif %}
-                                    </div>
-                                    <div class="favorite-image-label">{{ item.value.title }}</div>
-                                    {% if item.value.subtitle %}
-                                        <p>{{ item.value.subtitle }}</p>
+                            <article class="favorite-image-card">
+                                <div class="favorite-image-slot">
+                                    {% if item.image %}
+                                        {% image item.image fill-360x240 %}
                                     {% endif %}
-                                </article>
-                            {% endfor %}
+                                </div>
+                                <div class="favorite-image-label">{{ item.title }}</div>
+                                {% if item.subtitle %}
+                                    <p>{{ item.subtitle }}</p>
+                                {% endif %}
+                            </article>
+                        {% endfor %}
                         </div>
                     </section>
                 {% endfor %}
